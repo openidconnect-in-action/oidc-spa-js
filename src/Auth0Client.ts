@@ -18,11 +18,14 @@ import TransactionManager from './transaction-manager';
 import { verify as verifyIdToken } from './jwt';
 import { AuthenticationError, GenericError } from './errors';
 import * as ClientStorage from './storage';
+
 import {
   DEFAULT_POPUP_CONFIG_OPTIONS,
   DEFAULT_AUTHORIZE_TIMEOUT_IN_SECONDS
 } from './constants';
+
 import version from './version';
+
 import {
   Auth0ClientOptions,
   BaseLoginOptions,
@@ -40,6 +43,9 @@ import {
   OAuthTokenOptions,
   CacheLocation
 } from './global';
+
+// @ts-ignore
+import TokenWorker from 'web-worker:./token-worker.ts';
 
 /**
  * @ignore
@@ -73,8 +79,11 @@ export default class Auth0Client {
   private cache: ICache;
   private transactionManager: TransactionManager;
   private domainUrl: string;
+
   private tokenIssuer: string;
   private readonly DEFAULT_SCOPE = 'openid profile email';
+  private tokenWorker: any;
+  private tokenWorkerTasks: any = {};
 
   cacheLocation: CacheLocation;
 
@@ -93,6 +102,43 @@ export default class Auth0Client {
     this.tokenIssuer = this.options.issuer
       ? `https://${this.options.issuer}/`
       : `${this.domainUrl}/`;
+
+    if (window.Worker) {
+      this.tokenWorker = new TokenWorker();
+      this.tokenWorker.onmessage = e => this.handleMessage(e);
+    }
+  }
+
+  handleMessage(e) {
+    console.log('Handling message');
+
+    const { data } = e;
+    const { id, payload } = data;
+
+    if (id in this.tokenWorkerTasks) {
+      const task = this.tokenWorkerTasks[id];
+      task.listener(payload);
+    }
+  }
+
+  async getTokenWebWorker() {
+    return new Promise((resolve, reject) => {
+      const id = createRandomString();
+      const task = 'refresh-token';
+
+      this.tokenWorkerTasks[id] = {
+        task,
+        listener: data => {
+          console.log(`Done task ${id}`);
+          delete this.tokenWorkerTasks[id];
+          resolve(data);
+        }
+      };
+
+      console.log(this.tokenWorkerTasks);
+
+      this.tokenWorker.postMessage({ id, task });
+    });
   }
 
   private _url(path) {

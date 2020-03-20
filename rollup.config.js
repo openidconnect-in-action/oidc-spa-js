@@ -6,6 +6,7 @@ import sourcemaps from 'rollup-plugin-sourcemaps';
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 import visualizer from 'rollup-plugin-visualizer';
+import webWorkerLoader from 'rollup-plugin-web-worker-loader';
 
 import pkg from './package.json';
 
@@ -19,6 +20,7 @@ const getPlugins = shouldMinify => {
       browser: true
     }),
     commonjs(),
+    webWorkerLoader(),
     typescript({
       clean: true,
       useTsconfigDeclarationDir: true,
