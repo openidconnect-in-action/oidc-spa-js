@@ -17,3 +17,15 @@ export class AuthenticationError extends GenericError {
     Object.setPrototypeOf(this, AuthenticationError.prototype);
   }
 }
+
+export class TokenTaskError extends GenericError {
+  constructor(
+    error: string,
+    error_description: string,
+    public task_id: string
+  ) {
+    super(error, error_description);
+    //https://github.com/Microsoft/TypeScript-wiki/blob/master/Breaking-Changes.md#extending-built-ins-like-error-array-and-map-may-no-longer-work
+    Object.setPrototypeOf(this, TokenTaskError.prototype);
+  }
+}

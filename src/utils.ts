@@ -270,7 +270,6 @@ export const oauthToken = async ({
   await getJSON(`${baseUrl}/oauth/token`, timeout, {
     method: 'POST',
     body: JSON.stringify({
-      redirect_uri: window.location.origin,
       ...options
     }),
     headers: {

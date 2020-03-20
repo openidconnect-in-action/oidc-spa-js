@@ -21,7 +21,8 @@ import * as ClientStorage from './storage';
 
 import {
   DEFAULT_POPUP_CONFIG_OPTIONS,
-  DEFAULT_AUTHORIZE_TIMEOUT_IN_SECONDS
+  DEFAULT_AUTHORIZE_TIMEOUT_IN_SECONDS,
+  CACHE_LOCATION_MEMORY
 } from './constants';
 
 import version from './version';
@@ -41,7 +42,8 @@ import {
   LogoutOptions,
   RefreshTokenOptions,
   OAuthTokenOptions,
-  CacheLocation
+  CacheLocation,
+  TokenEndpointOptions
 } from './global';
 
 // @ts-ignore
@@ -88,7 +90,7 @@ export default class Auth0Client {
   cacheLocation: CacheLocation;
 
   constructor(private options: Auth0ClientOptions) {
-    this.cacheLocation = options.cacheLocation || 'memory';
+    this.cacheLocation = options.cacheLocation || CACHE_LOCATION_MEMORY;
 
     if (!cacheFactory(this.cacheLocation)) {
       throw new Error(`Invalid cache location "${this.cacheLocation}"`);
@@ -103,41 +105,53 @@ export default class Auth0Client {
       ? `https://${this.options.issuer}/`
       : `${this.domainUrl}/`;
 
-    if (window.Worker) {
+    if (window.Worker && this.cacheLocation === CACHE_LOCATION_MEMORY) {
       this.tokenWorker = new TokenWorker();
-      this.tokenWorker.onmessage = e => this.handleMessage(e);
+      this.tokenWorker.onmessage = e => this.handleMessage(null, e);
+      this.tokenWorker.onerror = e => this.handleMessage(e, { id: e.task_id });
     }
   }
 
-  handleMessage(e) {
+  handleMessage(err, message) {
     console.log('Handling message');
 
-    const { data } = e;
-    const { id, payload } = data;
+    const { id } = message;
 
     if (id in this.tokenWorkerTasks) {
       const task = this.tokenWorkerTasks[id];
-      task.listener(payload);
+
+      delete this.tokenWorkerTasks[id];
+
+      if (err) {
+        return task.listener(err);
+      }
+
+      task.listener(null, message.payload);
     }
   }
 
-  async getTokenWebWorker() {
+  async dispatchRefreshToken(data) {
     return new Promise((resolve, reject) => {
       const id = createRandomString();
       const task = 'refresh-token';
 
       this.tokenWorkerTasks[id] = {
         task,
-        listener: data => {
+        listener: (err, result) => {
+          if (err) {
+            // console.error(err);
+            return reject(err);
+          }
+
           console.log(`Done task ${id}`);
+          console.log(result);
+
           delete this.tokenWorkerTasks[id];
-          resolve(data);
+          resolve(result);
         }
       };
 
-      console.log(this.tokenWorkerTasks);
-
-      this.tokenWorker.postMessage({ id, task });
+      this.tokenWorker.postMessage({ id, task, args: data });
     });
   }
 
@@ -694,7 +708,7 @@ export default class Auth0Client {
       client_id: this.options.client_id
     });
 
-    if (!cache || !cache.refresh_token) {
+    if ((!cache || !cache.refresh_token) && !this.tokenWorker) {
       return await this._getTokenFromIFrame(options);
     }
 
@@ -703,21 +717,30 @@ export default class Auth0Client {
       this.options.redirect_uri ||
       window.location.origin;
 
-    const tokenResult = await oauthToken({
+    const args = {
       baseUrl: this.domainUrl,
       client_id: this.options.client_id,
       grant_type: 'refresh_token',
-      refresh_token: cache.refresh_token,
       redirect_uri
-    } as RefreshTokenOptions);
+    } as TokenEndpointOptions;
 
-    const decodedToken = this._verifyIdToken(tokenResult.id_token);
+    try {
+      const tokenResult = this.tokenWorker
+        ? await this.dispatchRefreshToken(args)
+        : await oauthToken(args);
 
-    return {
-      ...tokenResult,
-      decodedToken,
-      scope: options.scope,
-      audience: options.audience || 'default'
-    };
+      const decodedToken = this._verifyIdToken(tokenResult.id_token);
+
+      return {
+        ...tokenResult,
+        decodedToken,
+        scope: options.scope,
+        audience: options.audience || 'default'
+      };
+    } catch (e) {
+      if (e.error === 'missing_refresh_token') {
+        return await this._getTokenFromIFrame(options);
+      }
+    }
   }
 }
