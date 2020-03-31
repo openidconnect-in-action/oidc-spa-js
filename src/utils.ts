@@ -20,11 +20,13 @@ export const parseQueryResult = (queryString: string) => {
     queryString = queryString.substr(0, queryString.indexOf('#'));
   }
 
-  let queryParams = queryString.split('&');
+  const queryParams = queryString.split('&');
+  const parsedQuery: any = {};
 
-  let parsedQuery: any = {};
   queryParams.forEach(qp => {
-    let [key, val] = qp.split('=');
+    const i = qp.indexOf('=');
+    const [key, val] = [qp.slice(0, i), qp.slice(i + 1)];
+
     parsedQuery[key] = decodeURIComponent(val);
   });
 

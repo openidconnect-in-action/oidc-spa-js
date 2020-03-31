@@ -58,6 +58,14 @@ describe('utils', () => {
         expires_in: 10
       });
     });
+    it('can parse base64 encoded values that have equals signs', () => {
+      expect(
+        parseQueryResult('value=test&another-value=Fhif987fdlk908dfhf==')
+      ).toMatchObject({
+        value: 'test',
+        'another-value': 'Fhif987fdlk908dfhf=='
+      });
+    });
   });
   describe('createQueryParams', () => {
     it('creates query string from object', () => {
