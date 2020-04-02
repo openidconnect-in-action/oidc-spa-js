@@ -110,6 +110,11 @@ export interface Auth0ClientOptions extends BaseLoginOptions {
    * Defaults to 60s.
    */
   authorizeTimeoutInSeconds?: number;
+  /**
+   * The path to the Service Worker file on your server
+   * Defaults to /sw.js
+   */
+  serviceWorkerPath?: string;
 }
 
 /**

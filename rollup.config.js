@@ -59,6 +59,17 @@ let bundles = [
     watch: {
       clearScreen: false
     }
+  },
+  {
+    input: 'service-worker/index.ts',
+    output: {
+      file: 'dist/sw.js',
+      format: 'iife'
+    },
+    plugins: [...getPlugins(false)],
+    watch: {
+      clearScreen: false
+    }
   }
 ];
 

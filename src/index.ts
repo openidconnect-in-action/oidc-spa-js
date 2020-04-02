@@ -39,6 +39,15 @@ export default async function createAuth0Client(options: Auth0ClientOptions) {
     }
   }
 
+  try {
+    const { scope } = await navigator.serviceWorker.register(
+      options.serviceWorkerPath || '/sw.js'
+    );
+    console.log('ServiceWorker registration successful with scope: ', scope);
+  } catch (error) {
+    console.log('ServiceWorker registration failed: ', error);
+  }
+
   return auth0;
 }
 
