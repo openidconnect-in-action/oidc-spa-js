@@ -11,6 +11,7 @@ import {
   sha256,
   bufferToBase64UrlEncoded,
   oauthToken,
+  sendMessage,
   validateCrypto
 } from './utils';
 
@@ -423,9 +424,22 @@ export default class Auth0Client {
 
     ClientStorage.save('auth0.is.authenticated', true, { daysUntilExpire: 1 });
 
+    // Store the access token
+    await sendMessage({
+      type: 'store',
+      accessToken: authResult.access_token,
+      expiresIn: authResult.expires_in
+    });
+
     return {
       appState: transaction.appState
     };
+  }
+
+  // Make authorized fetch requests
+  // The servie worker will attach the Authz header and make the request
+  public authorizedFetch(url, opts) {
+    return sendMessage({ url, type: 'fetch', ...opts });
   }
 
   /**
@@ -531,8 +545,9 @@ export default class Auth0Client {
    *
    */
   public async isAuthenticated() {
-    const user = await this.getUser();
-    return !!user;
+    // Query the access_token in the service worker to check authentication status
+    const isAuthenticated = await sendMessage({ type: 'check' });
+    return !!isAuthenticated;
   }
 
   /**

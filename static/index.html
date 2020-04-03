@@ -44,25 +44,9 @@
           </button>
         </div>
 
-        <div class="btn-group mb-3">
-          <button
-            class="btn btn-secondary"
-            @click="getToken"
-            data-cy="get-token"
-          >
-            Get access token
-          </button>
-
-          <button class="btn btn-secondary" @click="getMultipleTokens">
-            Get multiple tokens (ignoring cache)
-          </button>
-
-          <button class="btn btn-secondary" @click="getTokenPopup">
-            Get access token with a popup
-          </button>
-
-          <button class="btn btn-secondary" @click="getTokenAudience">
-            Get access token for a different audience
+        <div class="btn-group mb-3" style="display: block;">
+          <button class="btn btn-outline-secondary" @click="getUserInfo">
+            GET: /userinfo
           </button>
         </div>
 
@@ -206,7 +190,7 @@
         </button>
       </form>
     </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/idb-keyval@3.2.0/dist/idb-keyval-iife.min.js"></script>
     <script src="/auth0-spa-js.development.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script type="text/javascript">
@@ -303,9 +287,9 @@
               _self.access_tokens.push(token);
             });
 
-            _self.auth0.getUser().then(function(user) {
-              _self.profile = user;
-            });
+            // _self.auth0.getUser().then(function(user) {
+            //   _self.profile = user;
+            // });
 
             _self.auth0.getIdTokenClaims().then(function(claims) {
               _self.id_token = claims.__raw;
@@ -333,18 +317,23 @@
           loginHandleRedirectCallback: function() {
             var _self = this;
 
-            _self.auth0.handleRedirectCallback().then(function() {
-              window.history.replaceState(
-                {},
-                document.title,
-                window.location.origin + '/'
-              );
+            _self.auth0
+              .handleRedirectCallback()
+              .then(function() {
+                window.history.replaceState(
+                  {},
+                  document.title,
+                  window.location.origin + '/'
+                );
 
-              auth0.isAuthenticated().then(function(isAuthenticated) {
-                _self.isAuthenticated = isAuthenticated;
-                _self.showAuth0Info();
+                auth0.isAuthenticated().then(function(isAuthenticated) {
+                  _self.isAuthenticated = isAuthenticated;
+                  _self.showAuth0Info();
+                });
+              })
+              .catch(e => {
+                console.log(e);
               });
-            });
           },
           getToken: function() {
             var _self = this;
@@ -405,6 +394,15 @@
               .getTokenSilently(differentAudienceOptions)
               .then(function(token) {
                 _self.access_tokens = [token];
+              });
+          },
+          getUserInfo: function() {
+            var _self = this;
+
+            _self.auth0
+              .authorizedFetch('https://' + _self.domain + '/userinfo')
+              .then(function(data) {
+                _self.profile = data;
               });
           },
           logout: function() {

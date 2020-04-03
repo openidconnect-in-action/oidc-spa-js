@@ -278,6 +278,19 @@ export const oauthToken = async ({
     }
   });
 
+export const sendMessage = (message, to = navigator.serviceWorker.controller) =>
+  new Promise(function(resolve, reject) {
+    const messageChannel = new MessageChannel();
+    messageChannel.port1.onmessage = function(event) {
+      if (event.data.error) {
+        reject(event.data.error);
+      } else {
+        resolve(event.data);
+      }
+    };
+    to.postMessage(message, [messageChannel.port2]);
+  });
+
 export const getCrypto = () => {
   //ie 11.x uses msCrypto
   return <Crypto>(window.crypto || (<any>window).msCrypto);
