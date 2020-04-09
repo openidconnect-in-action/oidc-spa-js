@@ -152,6 +152,16 @@
           />
         </div>
 
+        <div class="form-group">
+          <label for="audience">Redirect URI</label>
+          <input
+            type="text"
+            class="form-control"
+            id="redirect_uri"
+            v-model="redirectUri"
+          />
+        </div>
+
         <div class="custom-control custom-switch mb-5">
           <input
             type="checkbox"
@@ -232,70 +242,86 @@
       var defaultDomain = 'brucke.auth0.com';
       var defaultClientId = 'wLSIP47wM39wKdDmOj6Zb5eSEw3JVhVp';
       var defaultAudience = '';
+      var defaultRedirectUri = 'http://localhost:3000/';
 
-      var app = new Vue({
-        el: '#app',
-        data: function () {
-          var savedData = localStorage.getItem('spa-playground-data');
+      var startApp = function () {
+        return new Vue({
+          el: '#app',
+          data: function () {
+            var savedData = localStorage.getItem('spa-playground-data');
 
-          var data = savedData ? JSON.parse(savedData) : {};
+            var data = savedData ? JSON.parse(savedData) : {};
 
-          return {
-            auth0: null,
-            loading: true,
-            useLocalStorage: data.useLocalStorage || false,
-            useRefreshTokens: data.useRefreshTokens || false,
-            useCache: data.useCache === false ? false : true,
-            useConstructor: data.useConstructor === false ? false : true,
-            profile: null,
-            access_tokens: [],
-            id_token: '',
-            isAuthenticated: false,
-            domain: data.domain || defaultDomain,
-            clientId: data.clientId || defaultClientId,
-            audience: data.audience || defaultAudience,
-            error: null,
-          };
-        },
-        created: function () {
-          this.initializeClient();
-        },
-        watch: {
-          useLocalStorage: function () {
-            this.initializeClient();
-            this.saveForm();
-          },
-          useRefreshTokens: function () {
-            this.initializeClient();
-            this.saveForm();
-          },
-          useCache: function () {
-            this.saveForm();
-          },
-          useConstructor: function () {
-            this.initializeClient();
-            this.saveForm();
-          },
-        },
-        methods: {
-          initializeClient: function () {
-            var _self = this;
-
-            const _init = function (auth0) {
-              _self.auth0 = auth0;
-              window.auth0 = auth0; // Cypress integration tests support
-              _self.loading = false;
-
-              auth0.isAuthenticated().then(function (isAuthenticated) {
-                _self.isAuthenticated = isAuthenticated;
-              });
+            return {
+              auth0: null,
+              loading: true,
+              useLocalStorage: data.useLocalStorage || false,
+              useRefreshTokens: data.useRefreshTokens || false,
+              useCache: data.useCache === false ? false : true,
+              useConstructor: data.useConstructor === false ? false : true,
+              profile: null,
+              access_tokens: [],
+              id_token: '',
+              isAuthenticated: false,
+              domain: data.domain || defaultDomain,
+              clientId: data.clientId || defaultClientId,
+              audience: data.audience || defaultAudience,
+              error: null,
+              redirectUri: data.redirectUri || defaultRedirectUri,
             };
+          },
+          created: function () {
+            this.initializeClient();
+          },
+          watch: {
+            useLocalStorage: function () {
+              this.initializeClient();
+              this.saveForm();
+            },
+            useRefreshTokens: function () {
+              this.initializeClient();
+              this.saveForm();
+            },
+            useCache: function () {
+              this.saveForm();
+            },
+            useConstructor: function () {
+              this.initializeClient();
+              this.saveForm();
+            },
+          },
+          methods: {
+            initializeClient: function () {
+              var _self = this;
 
-            if (_self.useConstructor) {
-              console.log('Initializing using the constructor');
+              const _init = function (auth0) {
+                _self.auth0 = auth0;
+                window.auth0 = auth0; // Cypress integration tests support
+                _self.loading = false;
 
-              _init(
-                new Auth0Client({
+                auth0.isAuthenticated().then(function (isAuthenticated) {
+                  _self.isAuthenticated = isAuthenticated;
+                });
+              };
+
+              if (_self.useConstructor) {
+                console.log('Initializing using the constructor');
+
+                _init(
+                  new Auth0Client({
+                    domain: _self.domain,
+                    client_id: _self.clientId,
+                    cacheLocation: _self.useLocalStorage
+                      ? 'localstorage'
+                      : 'memory',
+                    useRefreshTokens: _self.useRefreshTokens,
+                    audience: _self.audience,
+                  })
+                );
+              } else {
+                console.log('Initializing using the factory function');
+
+                createAuth0Client({
                   domain: _self.domain,
                   client_id: _self.clientId,
                   cacheLocation: _self.useLocalStorage
@@ -303,171 +329,160 @@
                     : 'memory',
                   useRefreshTokens: _self.useRefreshTokens,
                   audience: _self.audience,
+                }).then(_init);
+              }
+            },
+            saveForm: function () {
+              localStorage.setItem(
+                'spa-playground-data',
+                JSON.stringify({
+                  domain: this.domain,
+                  clientId: this.clientId,
+                  useLocalStorage: this.useLocalStorage,
+                  useRefreshTokens: this.useRefreshTokens,
+                  useConstructor: this.useConstructor,
+                  useCache: this.useCache,
+                  audience: this.audience,
                 })
               );
-            } else {
-              console.log('Initializing using the factory function');
+            },
+            resetForm: function () {
+              this.domain = defaultDomain;
+              this.clientId = defaultClientId;
+              this.useLocalStorage = false;
+              this.useRefreshTokens = false;
+              this.useCache = true;
+              this.audience = defaultAudience;
+              this.useConstructor = false;
+              this.saveForm();
+            },
+            showAuth0Info: function () {
+              var _self = this;
+              _self.access_tokens = [];
 
-              createAuth0Client({
-                domain: _self.domain,
-                client_id: _self.clientId,
-                cacheLocation: _self.useLocalStorage
-                  ? 'localstorage'
-                  : 'memory',
-                useRefreshTokens: _self.useRefreshTokens,
-                audience: _self.audience,
-              }).then(_init);
-            }
-          },
-          saveForm: function () {
-            localStorage.setItem(
-              'spa-playground-data',
-              JSON.stringify({
-                domain: this.domain,
-                clientId: this.clientId,
-                useLocalStorage: this.useLocalStorage,
-                useRefreshTokens: this.useRefreshTokens,
-                useConstructor: this.useConstructor,
-                useCache: this.useCache,
-                audience: this.audience,
-              })
-            );
-          },
-          resetForm: function () {
-            this.domain = defaultDomain;
-            this.clientId = defaultClientId;
-            this.useLocalStorage = false;
-            this.useRefreshTokens = false;
-            this.useCache = true;
-            this.audience = defaultAudience;
-            this.useConstructor = false;
-            this.saveForm();
-          },
-          showAuth0Info: function () {
-            var _self = this;
-            _self.access_tokens = [];
+              _self.auth0.getTokenSilently().then(function (token) {
+                _self.access_tokens.push(token);
+              });
 
-            _self.auth0.getTokenSilently().then(function (token) {
-              _self.access_tokens.push(token);
-            });
+              _self.auth0.getUser().then(function (user) {
+                _self.profile = user;
+              });
 
-            _self.auth0.getUser().then(function (user) {
-              _self.profile = user;
-            });
+              _self.auth0.getIdTokenClaims().then(function (claims) {
+                _self.id_token = claims.__raw;
+              });
+            },
+            loginPopup: function () {
+              var _self = this;
 
-            _self.auth0.getIdTokenClaims().then(function (claims) {
-              _self.id_token = claims.__raw;
-            });
-          },
-          loginPopup: function () {
-            var _self = this;
+              _self.auth0
+                .loginWithPopup({
+                  redirect_uri: this.redirectUri,
+                })
+                .then(function () {
+                  auth0.isAuthenticated().then(function (isAuthenticated) {
+                    _self.isAuthenticated = isAuthenticated;
+                    _self.showAuth0Info();
+                  });
+                });
+            },
+            loginRedirect: function () {
+              this.auth0.loginWithRedirect({
+                redirect_uri: this.redirectUri,
+              });
+            },
+            loginHandleRedirectCallback: function () {
+              var _self = this;
 
-            _self.auth0
-              .loginWithPopup({
-                redirect_uri: 'http://localhost:3000/callback.html',
-              })
-              .then(function () {
+              _self.auth0.handleRedirectCallback().then(function () {
+                window.history.replaceState(
+                  {},
+                  document.title,
+                  window.location.origin + '/'
+                );
+
                 auth0.isAuthenticated().then(function (isAuthenticated) {
                   _self.isAuthenticated = isAuthenticated;
                   _self.showAuth0Info();
                 });
               });
-          },
-          loginRedirect: function () {
-            this.auth0.loginWithRedirect({
-              redirect_uri: 'http://localhost:3000/',
-            });
-          },
-          loginHandleRedirectCallback: function () {
-            var _self = this;
+            },
+            getToken: function () {
+              var _self = this;
 
-            _self.auth0.handleRedirectCallback().then(function () {
-              window.history.replaceState(
-                {},
-                document.title,
-                window.location.origin + '/'
-              );
+              _self.auth0
+                .getTokenSilently({ ignoreCache: !_self.useCache })
+                .then(function (token) {
+                  _self.access_tokens.push(token);
+                  _self.error = null;
 
-              auth0.isAuthenticated().then(function (isAuthenticated) {
-                _self.isAuthenticated = isAuthenticated;
-                _self.showAuth0Info();
-              });
-            });
-          },
-          getToken: function () {
-            var _self = this;
+                  auth0.isAuthenticated().then(function (isAuthenticated) {
+                    _self.isAuthenticated = isAuthenticated;
+                  });
+                })
+                .catch(function (e) {
+                  console.error(e);
 
-            _self.auth0
-              .getTokenSilently({ ignoreCache: !_self.useCache })
-              .then(function (token) {
-                _self.access_tokens.push(token);
-                _self.error = null;
-
-                auth0.isAuthenticated().then(function (isAuthenticated) {
-                  _self.isAuthenticated = isAuthenticated;
+                  if (e.message) {
+                    _self.error = e.message;
+                  } else {
+                    _self.error = e;
+                  }
                 });
-              })
-              .catch(function (e) {
-                console.error(e);
+            },
+            getMultipleTokens: function () {
+              var _self = this;
 
-                if (e.message) {
-                  _self.error = e.message;
-                } else {
-                  _self.error = e;
-                }
+              Promise.all([
+                _self.auth0.getTokenSilently({ ignoreCache: true }),
+                _self.auth0.getTokenSilently({ ignoreCache: true }),
+              ]).then(function (tokens) {
+                _self.access_tokens = [tokens[0], tokens[1]];
               });
-          },
-          getMultipleTokens: function () {
-            var _self = this;
+            },
+            getTokenPopup: function () {
+              var _self = this;
 
-            Promise.all([
-              _self.auth0.getTokenSilently({ ignoreCache: true }),
-              _self.auth0.getTokenSilently({ ignoreCache: true }),
-            ]).then(function (tokens) {
-              _self.access_tokens = [tokens[0], tokens[1]];
-            });
-          },
-          getTokenPopup: function () {
-            var _self = this;
+              _self.auth0
+                .getTokenWithPopup({
+                  audience: 'https://brucke.auth0.com/api/v2/',
+                  scope: 'read:rules',
+                })
+                .then(function (token) {
+                  _self.access_tokens = [token];
+                });
+            },
+            getTokenAudience: function () {
+              var _self = this;
 
-            _self.auth0
-              .getTokenWithPopup({
+              var differentAudienceOptions = {
                 audience: 'https://brucke.auth0.com/api/v2/',
                 scope: 'read:rules',
-              })
-              .then(function (token) {
-                _self.access_tokens = [token];
-              });
-          },
-          getTokenAudience: function () {
-            var _self = this;
+                redirect_uri: this.redirectUri,
+                ignoreCache: !_self.useCache,
+              };
 
-            var differentAudienceOptions = {
-              audience: 'https://brucke.auth0.com/api/v2/',
-              scope: 'read:rules',
-              redirect_uri: 'http://localhost:3000/callback.html',
-              ignoreCache: !_self.useCache,
-            };
-
-            _self.auth0
-              .getTokenSilently(differentAudienceOptions)
-              .then(function (token) {
-                _self.access_tokens = [token];
+              _self.auth0
+                .getTokenSilently(differentAudienceOptions)
+                .then(function (token) {
+                  _self.access_tokens = [token];
+                });
+            },
+            logout: function () {
+              this.auth0.logout({
+                returnTo: this.redirectUri,
               });
+            },
+            logoutNoClient: function () {
+              this.auth0.logout({
+                client_id: null,
+                returnTo: this.redirectUri,
+              });
+            },
           },
-          logout: function () {
-            this.auth0.logout({
-              returnTo: 'http://localhost:3000/',
-            });
-          },
-          logoutNoClient: function () {
-            this.auth0.logout({
-              client_id: null,
-              returnTo: 'http://localhost:3000/',
-            });
-          },
-        },
-      });
+        });
+      };
+      window.location.search.includes('automated') || startApp();
     </script>
   </body>
 </html>
