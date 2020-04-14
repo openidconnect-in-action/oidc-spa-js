@@ -8,3 +8,4 @@ cypress/videos
 .release
 .idea
 local.log
+browserstack.err

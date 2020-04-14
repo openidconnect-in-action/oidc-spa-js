@@ -38,7 +38,7 @@ exports.config = {
       os: 'Windows',
       os_version: '10',
       browserName: 'Edge',
-      browser_version: '11.0',
+      browser_version: '80.0',
       'browserstack.local': true,
     },
     {
