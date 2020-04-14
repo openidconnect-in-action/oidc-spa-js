@@ -40,6 +40,7 @@
     "@wdio/local-runner": "^6.0.14",
     "@wdio/mocha-framework": "^6.0.13",
     "@wdio/spec-reporter": "^6.0.14",
+    "browserstack-local": "^1.4.5",
     "chromedriver": "^80.0.2",
     "cli-table": "^0.3.1",
     "concurrently": "^5.1.0",

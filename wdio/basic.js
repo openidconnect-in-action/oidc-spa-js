@@ -34,8 +34,8 @@ const getPermutations = (nums) => {
 };
 
 const init = async (browser, key, config) => {
-  browser.execute(
-    (key, value) => {
+  await browser.execute(
+    function (key, value) {
       localStorage.setItem(key, value);
       startApp();
     },
@@ -47,7 +47,6 @@ const init = async (browser, key, config) => {
 const expectIsAuthenticated = async (browser, isAuthenticated) => {
   const isAuthenticatedEl = await browser.$(CONTAINER_IS_AUTHENTICATED);
   const isAuthenticatedText = await isAuthenticatedEl.getText();
-  console.log(isAuthenticatedText === 'true', isAuthenticated);
   expect(isAuthenticatedText === 'true').toEqual(isAuthenticated);
 };
 
@@ -60,10 +59,13 @@ const expectAccessTokens = async (browser, numToken) => {
 };
 
 describe('basic test', () => {
+  afterEach(async () => {
+    await browser.reloadSession();
+  });
+
   getPermutations(3).forEach(
     ([useLocalStorage, useRefreshTokens, useCache]) => {
       it(`should login and get access token for useLocalStorage: ${useLocalStorage}, useRefreshTokens: ${useRefreshTokens}, useCache: ${useCache}`, async () => {
-        await browser.reloadSession();
         const settings = {
           domain: DOMAIN,
           clientId: CLIENT_ID,
@@ -80,7 +82,7 @@ describe('basic test', () => {
         await (await browser.$(BTN_LOGIN_REDIRECT)).click();
         // on auth0
         const username = await browser.$(LOCK_INPUT_USERNAME);
-        await username.waitForClickable();
+        await username.waitForDisplayed();
         await username.setValue(USERNAME);
         await (await browser.$(LOCK_INPUT_PASSWORD)).setValue(PASSWORD);
         await (await browser.$(LOCK_BUTTON_SUBMIT)).click();
