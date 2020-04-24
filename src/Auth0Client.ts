@@ -90,6 +90,7 @@ export default class Auth0Client {
   private domainUrl: string;
   private tokenIssuer: string;
   private defaultScope: string;
+  private scope: string;
 
   cacheLocation: CacheLocation;
   private worker: Worker;
@@ -103,7 +104,7 @@ export default class Auth0Client {
     }
 
     this.cache = cacheFactory(this.cacheLocation)();
-
+    this.scope = this.options.scope;
     this.transactionManager = new TransactionManager();
     this.domainUrl = `https://${this.options.domain}`;
 
@@ -118,12 +119,11 @@ export default class Auth0Client {
         : DEFAULT_SCOPE
     );
 
-    // If using refresh tokens, automatically specify the `offline_access` scope
+    // If using refresh tokens, automatically specify the `offline_access` scope.
+    // Note we cannot add this to 'defaultScope' above as the scopes are used in the
+    // cache keys - changing the order could invalidate the keys
     if (this.options.useRefreshTokens) {
-      this.options.scope = getUniqueScopes(
-        this.options.scope,
-        'offline_access'
-      );
+      this.scope = getUniqueScopes(this.scope, 'offline_access');
     }
 
     // Don't use web workers unless using refresh tokens in memory and not IE11
@@ -169,7 +169,7 @@ export default class Auth0Client {
       ...authorizeOptions,
       scope: getUniqueScopes(
         this.defaultScope,
-        this.options.scope,
+        this.scope,
         authorizeOptions.scope
       ),
       response_type: 'code',
@@ -339,7 +339,7 @@ export default class Auth0Client {
   public async getUser(
     options: GetUserOptions = {
       audience: this.options.audience || 'default',
-      scope: this.options.scope || this.defaultScope
+      scope: this.scope || this.defaultScope
     }
   ) {
     options.scope = getUniqueScopes(this.defaultScope, options.scope);
@@ -364,12 +364,12 @@ export default class Auth0Client {
   public async getIdTokenClaims(
     options: GetIdTokenClaimsOptions = {
       audience: this.options.audience || 'default',
-      scope: this.options.scope || this.defaultScope
+      scope: this.scope || this.defaultScope
     }
   ) {
     options.scope = getUniqueScopes(
       this.defaultScope,
-      this.options.scope,
+      this.scope,
       options.scope
     );
 
@@ -500,11 +500,7 @@ export default class Auth0Client {
   public async getTokenSilently(options: GetTokenSilentlyOptions = {}) {
     const { ignoreCache, ...getTokenOptions } = {
       audience: this.options.audience,
-      scope: getUniqueScopes(
-        this.defaultScope,
-        this.options.scope,
-        options.scope
-      ),
+      scope: getUniqueScopes(this.defaultScope, this.scope, options.scope),
       ignoreCache: false,
       ...options
     };
@@ -560,13 +556,13 @@ export default class Auth0Client {
   public async getTokenWithPopup(
     options: GetTokenWithPopupOptions = {
       audience: this.options.audience,
-      scope: this.options.scope || this.defaultScope
+      scope: this.scope || this.defaultScope
     },
     config: PopupConfigOptions = DEFAULT_POPUP_CONFIG_OPTIONS
   ) {
     options.scope = getUniqueScopes(
       this.defaultScope,
-      this.options.scope,
+      this.scope,
       options.scope
     );
 
@@ -698,7 +694,7 @@ export default class Auth0Client {
   ): Promise<any> {
     options.scope = getUniqueScopes(
       this.defaultScope,
-      this.options.scope,
+      this.scope,
       options.scope
     );
 
