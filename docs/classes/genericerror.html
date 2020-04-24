@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Auth0Client | @auth0/auth0-spa-js</title>
+	<title>GenericError | @auth0/auth0-spa-js</title>
 	<meta name="description" content="Documentation for @auth0/auth0-spa-js">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<style type="text/css">/*! normalize.css v1.1.3 | MIT License | git.io/normalize */
@@ -2720,52 +2720,37 @@ img {
 </header>
 <nav class="tsd-navigation secondary">
 	<ul>
-		<li class="current tsd-kind-class">
+		<li class=" tsd-kind-class">
 			<a href="auth0client.html" class="tsd-kind-icon">Auth0<wbr>Client</a>
-			<ul>
-				<li class=" tsd-kind-constructor tsd-parent-kind-class">
-					<a href="auth0client.html#constructor" class="tsd-kind-icon">constructor</a>
-				</li>
-				<li class=" tsd-kind-property tsd-parent-kind-class">
-					<a href="auth0client.html#cachelocation" class="tsd-kind-icon">cache<wbr>Location</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class">
-					<a href="auth0client.html#buildauthorizeurl" class="tsd-kind-icon">build<wbr>Authorize<wbr>Url</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class">
-					<a href="auth0client.html#getidtokenclaims" class="tsd-kind-icon">get<wbr>IdToken<wbr>Claims</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class">
-					<a href="auth0client.html#gettokensilently" class="tsd-kind-icon">get<wbr>Token<wbr>Silently</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class">
-					<a href="auth0client.html#gettokenwithpopup" class="tsd-kind-icon">get<wbr>Token<wbr>With<wbr>Popup</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class">
-					<a href="auth0client.html#getuser" class="tsd-kind-icon">get<wbr>User</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class">
-					<a href="auth0client.html#handleredirectcallback" class="tsd-kind-icon">handle<wbr>Redirect<wbr>Callback</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class">
-					<a href="auth0client.html#isauthenticated" class="tsd-kind-icon">is<wbr>Authenticated</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class">
-					<a href="auth0client.html#loginwithpopup" class="tsd-kind-icon">login<wbr>With<wbr>Popup</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class">
-					<a href="auth0client.html#loginwithredirect" class="tsd-kind-icon">login<wbr>With<wbr>Redirect</a>
-				</li>
-				<li class=" tsd-kind-method tsd-parent-kind-class">
-					<a href="auth0client.html#logout" class="tsd-kind-icon">logout</a>
-				</li>
-			</ul>
 		</li>
 		<li class=" tsd-kind-class">
 			<a href="authenticationerror.html" class="tsd-kind-icon">Authentication<wbr>Error</a>
 		</li>
-		<li class=" tsd-kind-class">
+		<li class="current tsd-kind-class">
 			<a href="genericerror.html" class="tsd-kind-icon">Generic<wbr>Error</a>
+			<ul>
+				<li class=" tsd-kind-constructor tsd-parent-kind-class">
+					<a href="genericerror.html#constructor" class="tsd-kind-icon">constructor</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="genericerror.html#error" class="tsd-kind-icon">error</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class">
+					<a href="genericerror.html#error_description" class="tsd-kind-icon">error_<wbr>description</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a href="genericerror.html#message" class="tsd-kind-icon">message</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a href="genericerror.html#name" class="tsd-kind-icon">name</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+					<a href="genericerror.html#stack" class="tsd-kind-icon">stack</a>
+				</li>
+				<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-static">
+					<a href="genericerror.html#error-1" class="tsd-kind-icon">Error</a>
+				</li>
+			</ul>
 		</li>
 		<li class=" tsd-kind-interface">
 			<a href="../interfaces/auth0clientoptions.html" class="tsd-kind-icon">Auth0<wbr>Client<wbr>Options</a>
@@ -2819,18 +2804,21 @@ img {
 </nav>
 <div class="container container-main">
 	<div class="content-wrap">
-		<section class="tsd-panel tsd-comment">
-			<div class="tsd-comment tsd-typography">
-				<div class="lead">
-					<p>Auth0 SDK for Single Page Applications using <a href="https://auth0.com/docs/api-auth/tutorials/authorization-code-grant-pkce">Authorization Code Grant Flow with PKCE</a>.</p>
-				</div>
-			</div>
-		</section>
 		<section class="tsd-panel tsd-hierarchy">
 			<h3>Hierarchy</h3>
 			<ul class="tsd-hierarchy">
 				<li>
-					<span class="target">Auth0Client</span>
+					<a href="genericerror.html#error-1" class="tsd-signature-type">Error</a>
+					<ul class="tsd-hierarchy">
+						<li>
+							<span class="target">GenericError</span>
+							<ul class="tsd-hierarchy">
+								<li>
+									<a href="authenticationerror.html" class="tsd-signature-type">AuthenticationError</a>
+								</li>
+							</ul>
+						</li>
+					</ul>
 				</li>
 			</ul>
 		</section>
@@ -2841,28 +2829,18 @@ img {
 					<section class="tsd-index-section ">
 						<h3>Constructors</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="auth0client.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="genericerror.html#constructor" class="tsd-kind-icon">constructor</a></li>
 						</ul>
 					</section>
 					<section class="tsd-index-section ">
 						<h3>Properties</h3>
 						<ul class="tsd-index-list">
-							<li class="tsd-kind-property tsd-parent-kind-class"><a href="auth0client.html#cachelocation" class="tsd-kind-icon">cache<wbr>Location</a></li>
-						</ul>
-					</section>
-					<section class="tsd-index-section ">
-						<h3>Methods</h3>
-						<ul class="tsd-index-list">
-							<li class="tsd-kind-method tsd-parent-kind-class"><a href="auth0client.html#buildauthorizeurl" class="tsd-kind-icon">build<wbr>Authorize<wbr>Url</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class"><a href="auth0client.html#getidtokenclaims" class="tsd-kind-icon">get<wbr>IdToken<wbr>Claims</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class"><a href="auth0client.html#gettokensilently" class="tsd-kind-icon">get<wbr>Token<wbr>Silently</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class"><a href="auth0client.html#gettokenwithpopup" class="tsd-kind-icon">get<wbr>Token<wbr>With<wbr>Popup</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class"><a href="auth0client.html#getuser" class="tsd-kind-icon">get<wbr>User</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class"><a href="auth0client.html#handleredirectcallback" class="tsd-kind-icon">handle<wbr>Redirect<wbr>Callback</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class"><a href="auth0client.html#isauthenticated" class="tsd-kind-icon">is<wbr>Authenticated</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class"><a href="auth0client.html#loginwithpopup" class="tsd-kind-icon">login<wbr>With<wbr>Popup</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class"><a href="auth0client.html#loginwithredirect" class="tsd-kind-icon">login<wbr>With<wbr>Redirect</a></li>
-							<li class="tsd-kind-method tsd-parent-kind-class"><a href="auth0client.html#logout" class="tsd-kind-icon">logout</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="genericerror.html#error" class="tsd-kind-icon">error</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class"><a href="genericerror.html#error_description" class="tsd-kind-icon">error_<wbr>description</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="genericerror.html#message" class="tsd-kind-icon">message</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="genericerror.html#name" class="tsd-kind-icon">name</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="genericerror.html#stack" class="tsd-kind-icon">stack</a></li>
+							<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><a href="genericerror.html#error-1" class="tsd-kind-icon">Error</a></li>
 						</ul>
 					</section>
 				</div>
@@ -2874,22 +2852,25 @@ img {
 				<a name="constructor" class="tsd-anchor"></a>
 				<h3>constructor</h3>
 				<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">new <wbr>Auth0<wbr>Client<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">: </span><a href="../interfaces/auth0clientoptions.html" class="tsd-signature-type">Auth0ClientOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="auth0client.html" class="tsd-signature-type">Auth0Client</a></li>
+					<li class="tsd-signature tsd-kind-icon">new <wbr>Generic<wbr>Error<span class="tsd-signature-symbol">(</span>error<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, error_description<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="genericerror.html" class="tsd-signature-type">GenericError</a></li>
 				</ul>
 				<ul class="tsd-descriptions">
 					<li class="tsd-description">
 						<aside class="tsd-sources">
 							<ul>
-								<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/Auth0Client.ts#L91">src/Auth0Client.ts:91</a></li>
+								<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/errors.ts#L1">src/errors.ts:1</a></li>
 							</ul>
 						</aside>
 						<h4 class="tsd-parameters-title">Parameters</h4>
 						<ul class="tsd-parameters">
 							<li>
-								<h5>options: <a href="../interfaces/auth0clientoptions.html" class="tsd-signature-type">Auth0ClientOptions</a></h5>
+								<h5>error: <span class="tsd-signature-type">string</span></h5>
+							</li>
+							<li>
+								<h5>error_description: <span class="tsd-signature-type">string</span></h5>
 							</li>
 						</ul>
-						<h4 class="tsd-returns-title">Returns <a href="auth0client.html" class="tsd-signature-type">Auth0Client</a></h4>
+						<h4 class="tsd-returns-title">Returns <a href="genericerror.html" class="tsd-signature-type">GenericError</a></h4>
 					</li>
 				</ul>
 			</section>
@@ -2897,359 +2878,68 @@ img {
 		<section class="tsd-panel-group tsd-member-group ">
 			<h2>Properties</h2>
 			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
-				<a name="cachelocation" class="tsd-anchor"></a>
-				<h3>cache<wbr>Location</h3>
-				<div class="tsd-signature tsd-kind-icon">cache<wbr>Location<span class="tsd-signature-symbol">:</span> <a href="../globals.html#cachelocation" class="tsd-signature-type">CacheLocation</a></div>
+				<a name="error" class="tsd-anchor"></a>
+				<h3>error</h3>
+				<div class="tsd-signature tsd-kind-icon">error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 				<aside class="tsd-sources">
 					<ul>
-						<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/Auth0Client.ts#L90">src/Auth0Client.ts:90</a></li>
+						<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/errors.ts#L2">src/errors.ts:2</a></li>
 					</ul>
 				</aside>
 			</section>
-		</section>
-		<section class="tsd-panel-group tsd-member-group ">
-			<h2>Methods</h2>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-				<a name="buildauthorizeurl" class="tsd-anchor"></a>
-				<h3>build<wbr>Authorize<wbr>Url</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">build<wbr>Authorize<wbr>Url<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/redirectloginoptions.html" class="tsd-signature-type">RedirectLoginOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/Auth0Client.ts#L205">src/Auth0Client.ts:205</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<pre><code class="language-js"><span class="hljs-keyword">await</span> auth0.buildAuthorizeUrl(options);</code></pre>
-							</div>
-							<p>Builds an <code>/authorize</code> URL for loginWithRedirect using the parameters
-								provided as arguments. Random and secure <code>state</code> and <code>nonce</code>
-							parameters will be auto-generated.</p>
-						</div>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/redirectloginoptions.html" class="tsd-signature-type">RedirectLoginOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
-								<div class="tsd-comment tsd-typography">
-								</div>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-				</ul>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+				<a name="error_description" class="tsd-anchor"></a>
+				<h3>error_<wbr>description</h3>
+				<div class="tsd-signature tsd-kind-icon">error_<wbr>description<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/errors.ts#L2">src/errors.ts:2</a></li>
+					</ul>
+				</aside>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-				<a name="getidtokenclaims" class="tsd-anchor"></a>
-				<h3>get<wbr>IdToken<wbr>Claims</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">get<wbr>IdToken<wbr>Claims<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/getidtokenclaimsoptions.html" class="tsd-signature-type">GetIdTokenClaimsOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IdToken</span><span class="tsd-signature-symbol">&gt;</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/Auth0Client.ts#L353">src/Auth0Client.ts:353</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<pre><code class="language-js"><span class="hljs-keyword">const</span> claims = <span class="hljs-keyword">await</span> auth0.getIdTokenClaims();</code></pre>
-							</div>
-							<p>Returns all claims from the id_token if available.</p>
-						</div>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/getidtokenclaimsoptions.html" class="tsd-signature-type">GetIdTokenClaimsOptions</a><span class="tsd-signature-symbol"> = {audience: this.options.audience || &#x27;default&#x27;,scope: this.options.scope || this.DEFAULT_SCOPE,}</span></h5>
-								<div class="tsd-comment tsd-typography">
-								</div>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">IdToken</span><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-				</ul>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+				<a name="message" class="tsd-anchor"></a>
+				<h3>message</h3>
+				<div class="tsd-signature tsd-kind-icon">message<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<aside class="tsd-sources">
+					<p>Inherited from <a href="genericerror.html">GenericError</a>.<a href="genericerror.html#message">message</a></p>
+					<ul>
+						<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:974</li>
+					</ul>
+				</aside>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-				<a name="gettokensilently" class="tsd-anchor"></a>
-				<h3>get<wbr>Token<wbr>Silently</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">get<wbr>Token<wbr>Silently<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/gettokensilentlyoptions.html" class="tsd-signature-type">GetTokenSilentlyOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/Auth0Client.ts#L489">src/Auth0Client.ts:489</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<pre><code class="language-js"><span class="hljs-keyword">const</span> token = <span class="hljs-keyword">await</span> auth0.getTokenSilently(options);</code></pre>
-							</div>
-							<p>If there&#39;s a valid token stored, return it. Otherwise, opens an
-								iframe with the <code>/authorize</code> URL using the parameters provided
-								as arguments. Random and secure <code>state</code> and <code>nonce</code> parameters
-								will be auto-generated. If the response is successful, results
-							will be valid according to their expiration times.</p>
-							<p>If refresh tokens are used, the token endpoint is called directly with the
-								&#39;refresh_token&#39; grant. If no refresh token is available to make this call,
-							the SDK falls back to using an iframe to the &#39;/authorize&#39; URL.</p>
-							<p>This method may use a web worker to perform the token call if the in-memory
-							cache is used.</p>
-							<p>If an <code>audience</code> value is given to this function, the SDK always falls
-							back to using an iframe to make the token exchange.</p>
-							<p>Note that in all cases, falling back to an iframe requires access to
-							the <code>auth0</code> cookie.</p>
-						</div>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/gettokensilentlyoptions.html" class="tsd-signature-type">GetTokenSilentlyOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
-								<div class="tsd-comment tsd-typography">
-								</div>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-				</ul>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+				<a name="name" class="tsd-anchor"></a>
+				<h3>name</h3>
+				<div class="tsd-signature tsd-kind-icon">name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<aside class="tsd-sources">
+					<p>Inherited from <a href="genericerror.html">GenericError</a>.<a href="genericerror.html#name">name</a></p>
+					<ul>
+						<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:973</li>
+					</ul>
+				</aside>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-				<a name="gettokenwithpopup" class="tsd-anchor"></a>
-				<h3>get<wbr>Token<wbr>With<wbr>Popup</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">get<wbr>Token<wbr>With<wbr>Popup<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/gettokenwithpopupoptions.html" class="tsd-signature-type">GetTokenWithPopupOptions</a>, config<span class="tsd-signature-symbol">?: </span><a href="../interfaces/popupconfigoptions.html" class="tsd-signature-type">PopupConfigOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/Auth0Client.ts#L549">src/Auth0Client.ts:549</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<pre><code class="language-js"><span class="hljs-keyword">const</span> token = <span class="hljs-keyword">await</span> auth0.getTokenWithPopup(options);</code></pre>
-								<p>Opens a popup with the <code>/authorize</code> URL using the parameters
-									provided as arguments. Random and secure <code>state</code> and <code>nonce</code>
-									parameters will be auto-generated. If the response is successful,
-								results will be valid according to their expiration times.</p>
-							</div>
-						</div>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/gettokenwithpopupoptions.html" class="tsd-signature-type">GetTokenWithPopupOptions</a><span class="tsd-signature-symbol"> = {audience: this.options.audience,scope: this.options.scope || this.DEFAULT_SCOPE,}</span></h5>
-								<div class="tsd-comment tsd-typography">
-								</div>
-							</li>
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> config: <a href="../interfaces/popupconfigoptions.html" class="tsd-signature-type">PopupConfigOptions</a><span class="tsd-signature-symbol"> = DEFAULT_POPUP_CONFIG_OPTIONS</span></h5>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-				</ul>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+				<a name="stack" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagOptional">Optional</span> stack</h3>
+				<div class="tsd-signature tsd-kind-icon">stack<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<aside class="tsd-sources">
+					<p>Inherited from <a href="genericerror.html">GenericError</a>.<a href="genericerror.html#stack">stack</a></p>
+					<p>Overrides <a href="genericerror.html">GenericError</a>.<a href="genericerror.html#stack">stack</a></p>
+					<ul>
+						<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:975</li>
+					</ul>
+				</aside>
 			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-				<a name="getuser" class="tsd-anchor"></a>
-				<h3>get<wbr>User</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">get<wbr>User<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/getuseroptions.html" class="tsd-signature-type">GetUserOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/Auth0Client.ts#L328">src/Auth0Client.ts:328</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<pre><code class="language-js"><span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> auth0.getUser();</code></pre>
-							</div>
-							<p>Returns the user information if available (decoded
-							from the <code>id_token</code>).</p>
-						</div>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/getuseroptions.html" class="tsd-signature-type">GetUserOptions</a><span class="tsd-signature-symbol"> = {audience: this.options.audience || &#x27;default&#x27;,scope: this.options.scope || this.DEFAULT_SCOPE,}</span></h5>
-								<div class="tsd-comment tsd-typography">
-								</div>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-				<a name="handleredirectcallback" class="tsd-anchor"></a>
-				<h3>handle<wbr>Redirect<wbr>Callback</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">handle<wbr>Redirect<wbr>Callback<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/redirectloginresult.html" class="tsd-signature-type">RedirectLoginResult</a><span class="tsd-signature-symbol">&gt;</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/Auth0Client.ts#L395">src/Auth0Client.ts:395</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<p>After the browser redirects back to the callback page,
-									call <code>handleRedirectCallback</code> to handle success and error
-									responses from Auth0. If the response is successful, results
-								will be valid according to their expiration times.</p>
-							</div>
-						</div>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> url: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> = window.location.href</span></h5>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/redirectloginresult.html" class="tsd-signature-type">RedirectLoginResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-				<a name="isauthenticated" class="tsd-anchor"></a>
-				<h3>is<wbr>Authenticated</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">is<wbr>Authenticated<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/Auth0Client.ts#L582">src/Auth0Client.ts:582</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<pre><code class="language-js"><span class="hljs-keyword">const</span> isAuthenticated = <span class="hljs-keyword">await</span> auth0.isAuthenticated();</code></pre>
-							</div>
-							<p>Returns <code>true</code> if there&#39;s valid information stored,
-							otherwise returns <code>false</code>.</p>
-						</div>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-				<a name="loginwithpopup" class="tsd-anchor"></a>
-				<h3>login<wbr>With<wbr>Popup</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">login<wbr>With<wbr>Popup<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/popuploginoptions.html" class="tsd-signature-type">PopupLoginOptions</a>, config<span class="tsd-signature-symbol">?: </span><a href="../interfaces/popupconfigoptions.html" class="tsd-signature-type">PopupConfigOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/Auth0Client.ts#L255">src/Auth0Client.ts:255</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<pre><code class="language-js"><span class="hljs-keyword">await</span> auth0.loginWithPopup(options);</code></pre>
-							</div>
-							<p>Opens a popup with the <code>/authorize</code> URL using the parameters
-								provided as arguments. Random and secure <code>state</code> and <code>nonce</code>
-								parameters will be auto-generated. If the response is successful,
-							results will be valid according to their expiration times.</p>
-							<p>IMPORTANT: This method has to be called from an event handler
-								that was started by the user like a button click, for example,
-							otherwise the popup will be blocked in most browsers.</p>
-						</div>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/popuploginoptions.html" class="tsd-signature-type">PopupLoginOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
-								<div class="tsd-comment tsd-typography">
-								</div>
-							</li>
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> config: <a href="../interfaces/popupconfigoptions.html" class="tsd-signature-type">PopupConfigOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-				<a name="loginwithredirect" class="tsd-anchor"></a>
-				<h3>login<wbr>With<wbr>Redirect</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">login<wbr>With<wbr>Redirect<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/redirectloginoptions.html" class="tsd-signature-type">RedirectLoginOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/Auth0Client.ts#L384">src/Auth0Client.ts:384</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<pre><code class="language-js"><span class="hljs-keyword">await</span> auth0.loginWithRedirect(options);</code></pre>
-							</div>
-							<p>Performs a redirect to <code>/authorize</code> using the parameters
-								provided as arguments. Random and secure <code>state</code> and <code>nonce</code>
-							parameters will be auto-generated.</p>
-						</div>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/redirectloginoptions.html" class="tsd-signature-type">RedirectLoginOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
-								<div class="tsd-comment tsd-typography">
-								</div>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
-					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-				<a name="logout" class="tsd-anchor"></a>
-				<h3>logout</h3>
-				<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-					<li class="tsd-signature tsd-kind-icon">logout<span class="tsd-signature-symbol">(</span>options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/logoutoptions.html" class="tsd-signature-type">LogoutOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-				</ul>
-				<ul class="tsd-descriptions">
-					<li class="tsd-description">
-						<aside class="tsd-sources">
-							<ul>
-								<li>Defined in <a href="https://github.com/auth0/auth0-spa-js/blob/476caea/src/Auth0Client.ts#L602">src/Auth0Client.ts:602</a></li>
-							</ul>
-						</aside>
-						<div class="tsd-comment tsd-typography">
-							<div class="lead">
-								<pre><code class="language-js">auth0.logout();</code></pre>
-							</div>
-							<p>Clears the application session and performs a redirect to <code>/v2/logout</code>, using
-								the parameters provided as arguments, to clear the Auth0 session.
-								If the <code>federated</code> option is specified it also clears the Identity Provider session.
-								If the <code>localOnly</code> option is specified, it only clears the application session.
-								It is invalid to set both the <code>federated</code> and <code>localOnly</code> options to <code>true</code>,
-								and an error will be thrown if you do.
-							<a href="https://auth0.com/docs/logout">Read more about how Logout works at Auth0</a>.</p>
-						</div>
-						<h4 class="tsd-parameters-title">Parameters</h4>
-						<ul class="tsd-parameters">
-							<li>
-								<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/logoutoptions.html" class="tsd-signature-type">LogoutOptions</a><span class="tsd-signature-symbol"> = {}</span></h5>
-								<div class="tsd-comment tsd-typography">
-								</div>
-							</li>
-						</ul>
-						<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-					</li>
-				</ul>
+			<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-static">
+				<a name="error-1" class="tsd-anchor"></a>
+				<h3><span class="tsd-flag ts-flagStatic">Static</span> Error</h3>
+				<div class="tsd-signature tsd-kind-icon">Error<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ErrorConstructor</span></div>
+				<aside class="tsd-sources">
+					<ul>
+						<li>Defined in node_modules/typescript/lib/lib.es5.d.ts:984</li>
+					</ul>
+				</aside>
 			</section>
 		</section>
 		<footer>

@@ -6,6 +6,8 @@ import sourcemaps from 'rollup-plugin-sourcemaps';
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 import visualizer from 'rollup-plugin-visualizer';
+import webWorkerLoader from 'rollup-plugin-web-worker-loader';
+import replace from '@rollup/plugin-replace';
 
 import pkg from './package.json';
 
@@ -15,13 +17,24 @@ const isProduction = process.env.NODE_ENV === 'production';
 const shouldGenerateStats = process.env.WITH_STATS === 'true';
 const getPlugins = shouldMinify => {
   return [
+    webWorkerLoader({
+      sourceMap: !isProduction,
+      preserveSource: !isProduction,
+      pattern: /^[^\/].+\.worker\.ts$/
+    }),
     resolve({
       browser: true
     }),
     commonjs(),
     typescript({
+      check: false,
       clean: true,
       useTsconfigDeclarationDir: true,
+      include: [
+        'src/**/*.ts',
+        'src/**/*.js',
+        'node_modules/rollup-plugin-web-worker-loader/**/*'
+      ],
       tsconfigOverride: {
         noEmit: false,
         sourceMap: true,
@@ -30,18 +43,23 @@ const getPlugins = shouldMinify => {
         }
       }
     }),
+    replace({ 'process.env.NODE_ENV': `'${process.env.NODE_ENV}'` }),
     shouldMinify && terser(),
     sourcemaps()
   ];
 };
+const footer = `('Auth0Client' in this) && this.console && this.console.warn && this.console.warn('Auth0Client already declared on the global namespace');
+this && this.${EXPORT_NAME} && (this.Auth0Client = this.Auth0Client || this.${EXPORT_NAME}.Auth0Client);`;
 
 let bundles = [
   {
-    input: 'src/index.ts',
+    input: 'src/index.cjs.ts',
     output: {
       name: EXPORT_NAME,
       file: 'dist/auth0-spa-js.development.js',
-      format: 'umd'
+      footer,
+      format: 'umd',
+      sourcemap: true
     },
     plugins: [
       ...getPlugins(false),
@@ -62,11 +80,12 @@ let bundles = [
 if (isProduction) {
   bundles = bundles.concat(
     {
-      input: 'src/index.ts',
+      input: 'src/index.cjs.ts',
       output: [
         {
           name: EXPORT_NAME,
-          file: pkg.browser,
+          file: 'dist/auth0-spa-js.production.js',
+          footer,
           format: 'umd'
         }
       ],
@@ -86,7 +105,7 @@ if (isProduction) {
       plugins: getPlugins(isProduction)
     },
     {
-      input: 'src/index.ts',
+      input: 'src/index.cjs.ts',
       output: [
         {
           name: EXPORT_NAME,
