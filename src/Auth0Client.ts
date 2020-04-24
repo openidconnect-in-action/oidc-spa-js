@@ -1,7 +1,6 @@
 import Lock from 'browser-tabs-lock';
 
 import {
-  getUniqueScopes,
   createQueryParams,
   runPopup,
   parseQueryResult,
@@ -14,6 +13,7 @@ import {
   validateCrypto
 } from './utils';
 
+import { getUniqueScopes } from './scope';
 import { InMemoryCache, ICache, LocalStorageCache } from './cache';
 import TransactionManager from './transaction-manager';
 import { verify as verifyIdToken } from './jwt';

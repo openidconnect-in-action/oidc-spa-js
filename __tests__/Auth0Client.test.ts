@@ -5,6 +5,7 @@ import { verify } from '../src/jwt';
 import { MessageChannel } from 'worker_threads';
 import * as utils from '../src/utils';
 import { Auth0ClientOptions, IdToken } from '../src';
+import * as scope from '../src/scope';
 
 jest.mock('unfetch');
 jest.mock('../src/jwt');
@@ -102,7 +103,7 @@ describe('Auth0Client', () => {
     };
     mockWindow.MessageChannel = MessageChannel;
     mockWindow.Worker = {};
-    jest.spyOn(utils, 'getUniqueScopes');
+    jest.spyOn(scope, 'getUniqueScopes');
   });
 
   afterEach(() => {
@@ -115,7 +116,7 @@ describe('Auth0Client', () => {
       scope: 'test-scope'
     });
 
-    expect(utils.getUniqueScopes).toHaveBeenCalledWith(
+    expect(scope.getUniqueScopes).toHaveBeenCalledWith(
       'test-scope',
       'offline_access'
     );
@@ -128,7 +129,7 @@ describe('Auth0Client', () => {
       }
     });
 
-    expect(utils.getUniqueScopes).toHaveBeenCalledWith('openid', 'test-scope');
+    expect(scope.getUniqueScopes).toHaveBeenCalledWith('openid', 'test-scope');
   });
 
   it('should log the user in and get the token', async () => {
