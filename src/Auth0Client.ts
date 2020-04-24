@@ -111,10 +111,12 @@ export default class Auth0Client {
       ? `https://${this.options.issuer}/`
       : `${this.domainUrl}/`;
 
-    this.defaultScope =
+    this.defaultScope = getUniqueScopes(
+      'openid',
       this.options.advancedOptions && this.options.advancedOptions.defaultScope
         ? this.options.advancedOptions.defaultScope
-        : DEFAULT_SCOPE;
+        : DEFAULT_SCOPE
+    );
 
     // If using refresh tokens, automatically specify the `offline_access` scope
     if (this.options.useRefreshTokens) {

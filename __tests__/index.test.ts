@@ -40,7 +40,7 @@ const TEST_TELEMETRY_QUERY_STRING = `&auth0Client=${encodeURIComponent(
   )
 )}`;
 
-import { DEFAULT_POPUP_CONFIG_OPTIONS } from '../src/constants';
+import { DEFAULT_POPUP_CONFIG_OPTIONS, DEFAULT_SCOPE } from '../src/constants';
 
 const mockEnclosedCache = {
   get: jest.fn(),
@@ -269,6 +269,7 @@ describe('Auth0', () => {
       await auth0.loginWithPopup({
         connection: 'test-connection'
       });
+
       expect(utils.createQueryParams).toHaveBeenCalledWith({
         client_id: TEST_CLIENT_ID,
         scope: TEST_SCOPES,
