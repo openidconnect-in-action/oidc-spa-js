@@ -10,11 +10,8 @@ let refreshToken;
  */
 const wait: any = time => new Promise(resolve => setTimeout(resolve, time));
 
-/**
- * @ignore
- */
-const messageHandler = async ({
-  data: { url, timeout, messageType, ...fetchOptions },
+const execRefreshToken = async ({
+  data: { url, timeout, ...fetchOptions },
   ports: [port]
 }) => {
   let json;
@@ -75,6 +72,20 @@ const messageHandler = async ({
         error_description: error.message
       }
     });
+  }
+};
+
+/**
+ * @ignore
+ */
+const messageHandler = async options => {
+  switch (options.data.messageType) {
+    case 'refresh_token':
+      return execRefreshToken(options);
+    default:
+      throw new Error(
+        `Invalid or missing message type: ${options.data.messageType}`
+      );
   }
 };
 
