@@ -86,9 +86,9 @@ export default class Auth0Client {
   private domainUrl: string;
   private tokenIssuer: string;
   private readonly DEFAULT_SCOPE = 'openid profile email';
+  private worker: Worker;
 
   cacheLocation: CacheLocation;
-  private worker: Worker;
 
   constructor(private options: Auth0ClientOptions) {
     validateCrypto();

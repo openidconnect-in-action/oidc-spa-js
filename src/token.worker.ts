@@ -14,27 +14,32 @@ const wait: any = time => new Promise(resolve => setTimeout(resolve, time));
  * @ignore
  */
 const messageHandler = async ({
-  data: { url, timeout, ...opts },
+  data: { url, timeout, messageType, ...fetchOptions },
   ports: [port]
 }) => {
   let json;
   try {
-    const body = JSON.parse(opts.body);
+    const body = JSON.parse(fetchOptions.body);
+
     if (!body.refresh_token && body.grant_type === 'refresh_token') {
       if (!refreshToken) {
         throw new Error(MISSING_REFRESH_TOKEN_ERROR_MESSAGE);
       }
-      opts.body = JSON.stringify({ ...body, refresh_token: refreshToken });
+      fetchOptions.body = JSON.stringify({
+        ...body,
+        refresh_token: refreshToken
+      });
     }
 
     const abortController = new AbortController();
     const { signal } = abortController;
 
     let response;
+
     try {
       response = await Promise.race([
         wait(timeout),
-        fetch(url, { ...opts, signal })
+        fetch(url, { ...fetchOptions, signal })
       ]);
     } catch (error) {
       // fetch error, reject `sendMessage` using `error` key so that we retry.

@@ -13,6 +13,18 @@ import {
   CLEANUP_IFRAME_TIMEOUT_IN_SECONDS
 } from './constants';
 
+type WorkerOptions = {
+  messageType: 'refresh_token' | 'revoke';
+  worker: Worker;
+};
+
+type NetworkRequestOptions = {
+  url: string;
+  timeout: number;
+  fetchOptions: RequestInit;
+  workerOptions: WorkerOptions;
+};
+
 const dedupe = arr => arr.filter((x, i) => arr.indexOf(x) === i);
 
 const TIMEOUT_ERROR = { error: 'timeout', error_description: 'Timeout' };
@@ -208,9 +220,10 @@ export const bufferToBase64UrlEncoded = input => {
   );
 };
 
-const sendMessage = (message, to) =>
+const sendMessage = (message: any, to: Worker) =>
   new Promise(function (resolve, reject) {
     const messageChannel = new MessageChannel();
+
     messageChannel.port1.onmessage = function (event) {
       // Only for fetch errors, as these get retried
       if (event.data.error) {
@@ -219,16 +232,28 @@ const sendMessage = (message, to) =>
         resolve(event.data);
       }
     };
+
     to.postMessage(message, [messageChannel.port2]);
   });
 
-const switchFetch = async (url, opts, timeout, worker) => {
-  if (worker) {
+const switchFetch = async (options: NetworkRequestOptions) => {
+  const { url, timeout, workerOptions, fetchOptions } = options;
+
+  if (workerOptions.worker) {
     // AbortSignal is not serializable, need to implement in the Web Worker
-    delete opts.signal;
-    return sendMessage({ url, timeout, ...opts }, worker);
+    delete fetchOptions.signal;
+
+    const sendMessageOptions = {
+      url,
+      timeout: timeout || DEFAULT_FETCH_TIMEOUT_MS,
+      messageType: workerOptions.messageType,
+      ...fetchOptions
+    };
+
+    return sendMessage(sendMessageOptions, workerOptions.worker);
   } else {
-    const response = await fetch(url, opts);
+    const response = await fetch(url, fetchOptions);
+
     return {
       ok: response.ok,
       json: await response.json()
@@ -236,38 +261,29 @@ const switchFetch = async (url, opts, timeout, worker) => {
   }
 };
 
-const fetchWithTimeout = (
-  url,
-  options,
-  worker,
-  timeout = DEFAULT_FETCH_TIMEOUT_MS
-) => {
+const fetchWithTimeout = (options: NetworkRequestOptions) => {
   const controller = createAbortController();
-  const signal = controller.signal;
 
-  const fetchOptions = {
-    ...options,
-    signal
-  };
+  options.fetchOptions.signal = controller.signal;
 
   // The promise will resolve with one of these two promises (the fetch or the timeout), whichever completes first.
   return Promise.race([
-    switchFetch(url, fetchOptions, timeout, worker),
+    switchFetch(options),
     new Promise((_, reject) => {
       setTimeout(() => {
         controller.abort();
         reject(new Error("Timeout when executing 'fetch'"));
-      }, timeout);
+      }, options.timeout || DEFAULT_FETCH_TIMEOUT_MS);
     })
   ]);
 };
 
-const getJSON = async (url, timeout, options, worker) => {
+const getJSON = async (options: NetworkRequestOptions) => {
   let fetchError, response;
 
   for (let i = 0; i < DEFAULT_SILENT_TOKEN_RETRY_COUNT; i++) {
     try {
-      response = await fetchWithTimeout(url, options, worker, timeout);
+      response = await fetchWithTimeout(options);
       fetchError = null;
       break;
     } catch (e) {
@@ -290,7 +306,7 @@ const getJSON = async (url, timeout, options, worker) => {
 
   if (!ok) {
     const errorMessage =
-      error_description || `HTTP error. Unable to fetch ${url}`;
+      error_description || `HTTP error. Unable to fetch ${options.url}`;
     const e = <any>new Error(errorMessage);
 
     e.error = error || 'request_error';
@@ -304,12 +320,12 @@ const getJSON = async (url, timeout, options, worker) => {
 
 export const oauthToken = async (
   { baseUrl, timeout, ...options }: TokenEndpointOptions,
-  worker
-) =>
-  await getJSON(
-    `${baseUrl}/oauth/token`,
+  worker: Worker
+) => {
+  const requestOptions: NetworkRequestOptions = {
     timeout,
-    {
+    url: `${baseUrl}/oauth/token`,
+    fetchOptions: {
       method: 'POST',
       body: JSON.stringify({
         redirect_uri: window.location.origin,
@@ -319,8 +335,11 @@ export const oauthToken = async (
         'Content-type': 'application/json'
       }
     },
-    worker
-  );
+    workerOptions: { messageType: 'refresh_token', worker }
+  };
+
+  return await getJSON(requestOptions);
+};
 
 export const getCrypto = () => {
   //ie 11.x uses msCrypto
