@@ -38,7 +38,8 @@ describe('token worker', () => {
     const response = await messageHandlerAsync({
       url: '/foo',
       method: 'POST',
-      body: JSON.stringify({})
+      body: JSON.stringify({}),
+      messageType: 'refresh_token'
     });
     expect(response.json).toEqual({
       foo: 'bar'
@@ -55,6 +56,7 @@ describe('token worker', () => {
     await messageHandlerAsync({
       url: '/foo',
       method: 'POST',
+      messageType: 'refresh_token',
       body: JSON.stringify({
         grant_type: 'authorization_code'
       })
@@ -62,6 +64,7 @@ describe('token worker', () => {
     await messageHandlerAsync({
       url: '/foo',
       method: 'POST',
+      messageType: 'refresh_token',
       body: JSON.stringify({
         grant_type: 'refresh_token'
       })
@@ -76,6 +79,7 @@ describe('token worker', () => {
     const response = await messageHandlerAsync({
       url: '/foo',
       method: 'POST',
+      messageType: 'refresh_token',
       body: JSON.stringify({
         grant_type: 'refresh_token'
       })
@@ -90,6 +94,7 @@ describe('token worker', () => {
     const response = await messageHandlerAsync({
       url: '/foo',
       method: 'POST',
+      messageType: 'refresh_token',
       body: JSON.stringify({})
     });
     expect(response.error).toEqual('fail');
@@ -113,6 +118,7 @@ describe('token worker', () => {
     await messageHandlerAsync({
       url: '/foo',
       method: 'POST',
+      messageType: 'refresh_token',
       body: JSON.stringify({
         grant_type: 'authorization_code'
       })
@@ -121,6 +127,7 @@ describe('token worker', () => {
     await messageHandlerAsync({
       url: '/foo',
       method: 'POST',
+      messageType: 'refresh_token',
       body: JSON.stringify({
         grant_type: 'refresh_token'
       })
@@ -129,6 +136,7 @@ describe('token worker', () => {
     const result = await messageHandlerAsync({
       url: '/foo',
       method: 'POST',
+      messageType: 'refresh_token',
       body: JSON.stringify({
         grant_type: 'refresh_token'
       })
