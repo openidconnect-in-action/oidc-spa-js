@@ -12,6 +12,7 @@ import {
   DEFAULT_FETCH_TIMEOUT_MS,
   CLEANUP_IFRAME_TIMEOUT_IN_SECONDS
 } from './constants';
+import { FetchError, OAuthError } from './errors';
 
 const TIMEOUT_ERROR = { error: 'timeout', error_description: 'Timeout' };
 
@@ -224,6 +225,8 @@ const switchFetch = async (url, opts, timeout, worker) => {
     const response = await fetch(url, opts);
     return {
       ok: response.ok,
+      status: response.status,
+      statusText: response.statusText,
       json: await response.json()
     };
   }
@@ -276,23 +279,21 @@ const getJSON = async (url, timeout, options, worker) => {
   }
 
   if (fetchError) {
-    throw fetchError;
+    throw new FetchError(url);
   }
 
   const {
     json: { error, error_description, ...success },
-    ok
+    ok,
+    status,
+    statusText
   } = response;
 
   if (!ok) {
-    const errorMessage =
-      error_description || `HTTP error. Unable to fetch ${url}`;
-    const e = <any>new Error(errorMessage);
-
-    e.error = error || 'request_error';
-    e.error_description = errorMessage;
-
-    throw e;
+    if (error) {
+      throw new OAuthError(error, error_description);
+    }
+    throw new FetchError(url, status, statusText);
   }
 
   return success;

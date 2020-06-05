@@ -1,5 +1,16 @@
 import { MISSING_REFRESH_TOKEN_ERROR_MESSAGE } from './constants';
 
+enum WorkerResponseType {
+  MissingRefreshToken,
+  FetchTimeout,
+  NetworkFailure,
+  FetchResponse
+}
+
+type WorkerResponse =
+  | { type: WorkerResponseType.MissingRefreshToken }
+  | { type: WorkerResponseType.FetchTimeout };
+
 /**
  * @ignore
  */
@@ -22,7 +33,10 @@ const messageHandler = async ({
     const body = JSON.parse(opts.body);
     if (!body.refresh_token && body.grant_type === 'refresh_token') {
       if (!refreshToken) {
-        throw new Error(MISSING_REFRESH_TOKEN_ERROR_MESSAGE);
+        port.postMessage({
+          type: WorkerResponseType.MissingRefreshToken
+        });
+        return;
       }
       opts.body = JSON.stringify({ ...body, refresh_token: refreshToken });
     }
@@ -37,9 +51,8 @@ const messageHandler = async ({
         fetch(url, { ...opts, signal })
       ]);
     } catch (error) {
-      // fetch error, reject `sendMessage` using `error` key so that we retry.
       port.postMessage({
-        error: error.message
+        type: WorkerResponseType.NetworkFailure
       });
       return;
     }
@@ -60,15 +73,16 @@ const messageHandler = async ({
     }
 
     port.postMessage({
+      type: WorkerResponseType.FetchResponse,
       ok: response.ok,
+      status: response.status,
+      statusText: response.statusText,
       json
     });
   } catch (error) {
     port.postMessage({
       ok: false,
-      json: {
-        error_description: error.message
-      }
+      error: error.message
     });
   }
 };

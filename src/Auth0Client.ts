@@ -17,7 +17,7 @@ import { getUniqueScopes } from './scope';
 import { InMemoryCache, ICache, LocalStorageCache } from './cache';
 import TransactionManager from './transaction-manager';
 import { verify as verifyIdToken } from './jwt';
-import { AuthenticationError } from './errors';
+import { HandleRedirectError } from './errors';
 import * as ClientStorage from './storage';
 
 import {
@@ -429,7 +429,7 @@ export default class Auth0Client {
     if (error) {
       this.transactionManager.remove(state);
 
-      throw new AuthenticationError(
+      throw new HandleRedirectError(
         error,
         error_description,
         state,
