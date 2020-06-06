@@ -400,3 +400,55 @@ export interface IdToken {
   sid?: string;
   [key: string]: any;
 }
+
+/**
+ * @ignore
+ */
+export enum WorkerResponseType {
+  MissingRefreshToken,
+  FetchTimeout,
+  NetworkFailure,
+  FetchResponse,
+  AbortResponse
+}
+
+/**
+ * @ignore
+ */
+export type WorkerResponse =
+  | { type: WorkerResponseType.MissingRefreshToken }
+  | { type: WorkerResponseType.AbortResponse }
+  | { type: WorkerResponseType.NetworkFailure }
+  | { type: WorkerResponseType.FetchTimeout }
+  | {
+      type: WorkerResponseType.FetchResponse;
+      ok: boolean;
+      status: number;
+      statusText: string;
+      json: {};
+    };
+
+/**
+ * @ignore
+ */
+export enum WorkerRequestType {
+  GetToken,
+  AbortRequest
+}
+
+/**
+ * @ignore
+ */
+export interface GetTokenWorkerRequest extends RequestInit {
+  type?: WorkerRequestType.GetToken;
+  url: RequestInfo;
+  timeout: number;
+  body?: string;
+}
+
+/**
+ * @ignore
+ */
+export type WorkerRequest =
+  | { type: WorkerRequestType.AbortRequest }
+  | GetTokenWorkerRequest;

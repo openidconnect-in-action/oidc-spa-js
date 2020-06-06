@@ -2,21 +2,18 @@ import fetch from 'unfetch';
 
 import {
   AuthenticationResult,
+  GetTokenWorkerRequest,
   PopupConfigOptions,
-  TokenEndpointOptions
+  WorkerRequestType,
+  WorkerResponse,
+  WorkerResponseType
 } from './global';
 
 import {
-  DEFAULT_AUTHORIZE_TIMEOUT_IN_SECONDS,
-  DEFAULT_SILENT_TOKEN_RETRY_COUNT,
-  DEFAULT_FETCH_TIMEOUT_MS,
-  CLEANUP_IFRAME_TIMEOUT_IN_SECONDS
+  CLEANUP_IFRAME_TIMEOUT_IN_SECONDS,
+  DEFAULT_AUTHORIZE_TIMEOUT_IN_SECONDS
 } from './constants';
-import { FetchError, OAuthError } from './errors';
-
-const TIMEOUT_ERROR = { error: 'timeout', error_description: 'Timeout' };
-
-export const createAbortController = () => new AbortController();
+import { TimeoutError } from './errors';
 
 export const parseQueryResult = (queryString: string) => {
   if (queryString.indexOf('#') > -1) {
@@ -55,7 +52,7 @@ export const runIframe = (
     };
 
     const timeoutSetTimeoutId = setTimeout(() => {
-      rej(TIMEOUT_ERROR);
+      rej(new TimeoutError());
       removeIframe();
     }, timeoutInSeconds * 1000);
 
@@ -107,7 +104,7 @@ export const runPopup = (authorizeUrl: string, config: PopupConfigOptions) => {
 
   return new Promise<AuthenticationResult>((resolve, reject) => {
     const timeoutId = setTimeout(() => {
-      reject({ ...TIMEOUT_ERROR, popup });
+      reject(new TimeoutError());
     }, (config.timeoutInSeconds || DEFAULT_AUTHORIZE_TIMEOUT_IN_SECONDS) * 1000);
     window.addEventListener('message', e => {
       if (!e.data || e.data.type !== 'authorization_response') {
@@ -202,7 +199,10 @@ export const bufferToBase64UrlEncoded = input => {
   );
 };
 
-const sendMessage = (message, to) =>
+const sendMessage = (
+  message: GetTokenWorkerRequest,
+  to
+): Promise<WorkerResponse> =>
   new Promise(function (resolve, reject) {
     const messageChannel = new MessageChannel();
     messageChannel.port1.onmessage = function (event) {
@@ -216,14 +216,29 @@ const sendMessage = (message, to) =>
     to.postMessage(message, [messageChannel.port2]);
   });
 
-const switchFetch = async (url, opts, timeout, worker) => {
+export const fetchWithWorker = async (
+  url: string,
+  opts: ResponseInit,
+  timeout,
+  onTimeout,
+  worker
+): Promise<WorkerResponse> => {
   if (worker) {
-    // AbortSignal is not serializable, need to implement in the Web Worker
-    delete opts.signal;
-    return sendMessage({ url, timeout, ...opts }, worker);
+    onTimeout(() =>
+      worker.postMessage({ type: WorkerRequestType.AbortRequest })
+    );
+    const response = await sendMessage({ url, timeout, ...opts }, worker);
+    if (response.type === WorkerResponseType.NetworkFailure) {
+      throw new Error('Network failure');
+    }
+    return response;
   } else {
-    const response = await fetch(url, opts);
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const response = await fetch(url, { ...opts, signal });
+    onTimeout(() => controller.abort());
     return {
+      type: WorkerResponseType.FetchResponse,
       ok: response.ok,
       status: response.status,
       statusText: response.statusText,
@@ -232,92 +247,36 @@ const switchFetch = async (url, opts, timeout, worker) => {
   }
 };
 
-export const fetchWithTimeout = (
-  url,
-  options,
-  worker,
-  timeout = DEFAULT_FETCH_TIMEOUT_MS
-) => {
-  const controller = createAbortController();
-  const signal = controller.signal;
+export const retry = async (fn, attempts) => {
+  let result;
+  let error;
+  for (let i = 0; i < attempts; i++) {
+    try {
+      result = await fn();
+      error = null;
+      break;
+    } catch (e) {
+      error = e;
+    }
+  }
+  return [result, error];
+};
 
-  const fetchOptions = {
-    ...options,
-    signal
-  };
-
+export const withTimeout = async (fn, timeout) => {
   let timeoutId;
-  // The promise will resolve with one of these two promises (the fetch or the timeout), whichever completes first.
+  let onTimeout;
   return Promise.race([
-    switchFetch(url, fetchOptions, timeout, worker),
+    fn(cb => (onTimeout = cb)),
     new Promise((_, reject) => {
       timeoutId = setTimeout(() => {
-        controller.abort();
         reject(new Error("Timeout when executing 'fetch'"));
       }, timeout);
     })
   ]).finally(() => {
+    onTimeout && onTimeout();
     clearTimeout(timeoutId);
   });
 };
-
-const getJSON = async (url, timeout, options, worker) => {
-  let fetchError, response;
-
-  for (let i = 0; i < DEFAULT_SILENT_TOKEN_RETRY_COUNT; i++) {
-    try {
-      response = await fetchWithTimeout(url, options, worker, timeout);
-      fetchError = null;
-      break;
-    } catch (e) {
-      // Fetch only fails in the case of a network issue, so should be
-      // retried here. Failure status (4xx, 5xx, etc) return a resolved Promise
-      // with the failure in the body.
-      // https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API
-      fetchError = e;
-    }
-  }
-
-  if (fetchError) {
-    throw new FetchError(url);
-  }
-
-  const {
-    json: { error, error_description, ...success },
-    ok,
-    status,
-    statusText
-  } = response;
-
-  if (!ok) {
-    if (error) {
-      throw new OAuthError(error, error_description);
-    }
-    throw new FetchError(url, status, statusText);
-  }
-
-  return success;
-};
-
-export const oauthToken = async (
-  { baseUrl, timeout, ...options }: TokenEndpointOptions,
-  worker
-) =>
-  await getJSON(
-    `${baseUrl}/oauth/token`,
-    timeout,
-    {
-      method: 'POST',
-      body: JSON.stringify({
-        redirect_uri: window.location.origin,
-        ...options
-      }),
-      headers: {
-        'Content-type': 'application/json'
-      }
-    },
-    worker
-  );
 
 export const getCrypto = () => {
   //ie 11.x uses msCrypto

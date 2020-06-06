@@ -9,9 +9,10 @@ import {
   runIframe,
   sha256,
   bufferToBase64UrlEncoded,
-  oauthToken,
   validateCrypto
 } from './utils';
+
+import { oauthToken } from './token';
 
 import { getUniqueScopes } from './scope';
 import { InMemoryCache, ICache, LocalStorageCache } from './cache';

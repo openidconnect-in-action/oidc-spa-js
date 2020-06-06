@@ -1,5 +1,11 @@
 export class OAuthError extends Error {
-  constructor(public error: string, public error_description?: string) {
+  constructor(
+    public error: string,
+    public error_description?: string,
+    public url?: string,
+    public status?: string,
+    public statusText?: string
+  ) {
     super(error_description || error);
 
     Object.setPrototypeOf(this, OAuthError.prototype);
@@ -19,9 +25,6 @@ export class HandleRedirectError extends OAuthError {
   }
 }
 
-/**
- * TODO (should this extend OAuth Error?)
- */
 export class FetchError extends Error {
   /**
    * For backwards compatibility
@@ -37,6 +40,32 @@ export class FetchError extends Error {
     super(statusText || `HTTP error. Unable to fetch ${url}`);
     this.error = 'request_error';
     Object.setPrototypeOf(this, FetchError.prototype);
+  }
+}
+
+export class TimeoutError extends Error {
+  /**
+   * @deprecated
+   */
+  private error: string;
+  /**
+   * deprecated
+   */
+  private error_description: string;
+  constructor() {
+    super('Operation timed out.');
+
+    this.error = 'timeout';
+    this.error_description = 'Timeout';
+    Object.setPrototypeOf(this, OAuthError.prototype);
+  }
+}
+
+export class MissingRefreshTokenError extends Error {
+  constructor() {
+    super('Missing refresh token');
+
+    Object.setPrototypeOf(this, MissingRefreshTokenError.prototype);
   }
 }
 

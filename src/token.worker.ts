@@ -1,15 +1,13 @@
-import { MISSING_REFRESH_TOKEN_ERROR_MESSAGE } from './constants';
+import {
+  WorkerRequest,
+  WorkerRequestType,
+  WorkerResponse,
+  WorkerResponseType
+} from './global';
 
-enum WorkerResponseType {
-  MissingRefreshToken,
-  FetchTimeout,
-  NetworkFailure,
-  FetchResponse
+interface WorkerMessageEvent extends MessageEvent {
+  data: WorkerRequest;
 }
-
-type WorkerResponse =
-  | { type: WorkerResponseType.MissingRefreshToken }
-  | { type: WorkerResponseType.FetchTimeout };
 
 /**
  * @ignore
@@ -19,71 +17,55 @@ let refreshToken;
 /**
  * @ignore
  */
-const wait: any = time => new Promise(resolve => setTimeout(resolve, time));
+let abortController;
 
 /**
  * @ignore
  */
-const messageHandler = async ({
-  data: { url, timeout, ...opts },
-  ports: [port]
-}) => {
-  let json;
-  try {
-    const body = JSON.parse(opts.body);
-    if (!body.refresh_token && body.grant_type === 'refresh_token') {
-      if (!refreshToken) {
-        port.postMessage({
-          type: WorkerResponseType.MissingRefreshToken
-        });
-        return;
-      }
-      opts.body = JSON.stringify({ ...body, refresh_token: refreshToken });
-    }
+const messageHandler = async ({ data, ports: [port] }: WorkerMessageEvent) => {
+  const postBack = (msg: WorkerResponse) => port.postMessage(msg);
 
-    const abortController = new AbortController();
-    const { signal } = abortController;
-
-    let response;
-    try {
-      response = await Promise.race([
-        wait(timeout),
-        fetch(url, { ...opts, signal })
-      ]);
-    } catch (error) {
-      port.postMessage({
-        type: WorkerResponseType.NetworkFailure
+  switch (data.type) {
+    case WorkerRequestType.AbortRequest:
+      abortController && abortController.abort();
+      postBack({
+        type: WorkerResponseType.AbortResponse
       });
       return;
-    }
-
-    if (!response) {
-      // If the request times out, abort it and let `fetchWithTimeout` raise the error.
-      abortController.abort();
-      return;
-    }
-
-    json = await response.json();
-
-    if (json.refresh_token) {
-      refreshToken = json.refresh_token;
-      delete json.refresh_token;
-    } else {
-      refreshToken = null;
-    }
-
-    port.postMessage({
-      type: WorkerResponseType.FetchResponse,
-      ok: response.ok,
-      status: response.status,
-      statusText: response.statusText,
-      json
-    });
-  } catch (error) {
-    port.postMessage({
-      ok: false,
-      error: error.message
-    });
+    case WorkerRequestType.GetToken:
+      const bodyObj = JSON.parse(data.body);
+      if (!bodyObj.refresh_token && bodyObj.grant_type === 'refresh_token') {
+        if (!refreshToken) {
+          postBack({ type: WorkerResponseType.MissingRefreshToken });
+          return;
+        }
+        const body = JSON.stringify({
+          ...bodyObj,
+          refresh_token: refreshToken
+        });
+        abortController = new AbortController();
+        const { signal } = abortController;
+        const { headers, method } = data;
+        let response;
+        try {
+          response = await fetch(data.url, { body, headers, method, signal });
+        } catch (e) {
+          postBack({
+            type: WorkerResponseType.NetworkFailure
+          });
+          return;
+        }
+        const json = await response.json();
+        refreshToken = json.refresh_token;
+        delete json.refresh_token;
+        postBack({
+          type: WorkerResponseType.FetchResponse,
+          ok: response.ok,
+          status: response.status,
+          statusText: response.statusText,
+          json
+        });
+      }
   }
 };
 
