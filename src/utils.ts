@@ -359,3 +359,31 @@ export const validateCrypto = () => {
     `);
   }
 };
+
+// Check if this is a UC Browser on Android < 12.13.2
+const isOlderUcBrowser = ua => {
+  const match = ua && ua.match(/UCBrowser\/(\d+)\.(\d+)\.(\d+)\./);
+  if (!match) {
+    return false;
+  }
+  const [, major, minor, build] = match;
+  if (major !== '12') return +major < 12;
+  if (minor !== '13') return +minor < 13;
+  return +build < 2;
+};
+
+/**
+ * Some user agents are known to be incompatible with the `SameSite=None` attribute:
+ * - Chrome 51-66 inclusive will reject a cookie with `SameSite=None`.
+ * - UC Browser on Android < 12.13.2 will reject a cookie with `SameSite=None`.
+ * - Safari and embedded browsers on MacOS 10.14 will treat cookies marked with `SameSite=None` as `SameSite=Strict`.
+ * - All browsers on iOS 12 will treat cookies marked with `SameSite=None` as `SameSite=Strict`.
+ * For these user agents we should _not_ set SameSite=None
+ * See https://www.chromium.org/updates/same-site/incompatible-clients
+ */
+export const shouldNotSetSameSiteNone = (ua = window.navigator.userAgent) =>
+  /Chrom(?:e|ium)\/(?:5[1-9]|6[0-6])/.test(ua) || // Chrome 51-66
+  isOlderUcBrowser(ua) || // UC Browser on Android < 12.13.2
+  / OS X 10_14.*Version\/.* Safari\//.test(ua) || // Safari on MacOS 10.14
+  / OS X 10_14.*\(KHTML, like Gecko\)$/.test(ua) || // Embedded browsers on MacOS 10.14
+  /(?:iPhone|iPad; CPU) OS 12_/.test(ua); // iOS12

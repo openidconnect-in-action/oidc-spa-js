@@ -37,6 +37,31 @@ describe('storage', () => {
     );
     window.location = originalLocation;
   });
+  it('saves object without secure flag and samesite=none when on https on incompatible browser', () => {
+    const originalUserAgent = window.navigator.userAgent;
+    const iOS12 =
+      'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.95 Safari/537.36';
+    Object.defineProperty(window.navigator, 'userAgent', {
+      value: iOS12,
+      configurable: true
+    });
+    const key = 'key';
+    const value = { some: 'value' };
+    const options = { daysUntilExpire: 1 };
+    const originalLocation = window.location;
+    delete window.location;
+    window.location = { ...originalLocation, protocol: 'https:' };
+    storage.save(key, value, options);
+    expect(require('es-cookie').set).toHaveBeenCalledWith(
+      key,
+      JSON.stringify(value),
+      { expires: options.daysUntilExpire }
+    );
+    window.location = originalLocation;
+    Object.defineProperty(window.navigator, 'userAgent', {
+      value: originalUserAgent
+    });
+  });
   it('returns undefined when there is no object', () => {
     const Cookie = require('es-cookie');
     const key = 'key';

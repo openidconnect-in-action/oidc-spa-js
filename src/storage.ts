@@ -1,4 +1,5 @@
 import * as Cookies from 'es-cookie';
+import { shouldNotSetSameSiteNone } from './utils';
 
 interface ClientStorageOptions {
   daysUntilExpire: number;
@@ -19,7 +20,7 @@ export const save = (
   options: ClientStorageOptions
 ) => {
   let cookieAttributes: Cookies.CookieAttributes = {};
-  if ('https:' === window.location.protocol) {
+  if ('https:' === window.location.protocol && !shouldNotSetSameSiteNone()) {
     cookieAttributes = {
       secure: true,
       sameSite: 'none'
