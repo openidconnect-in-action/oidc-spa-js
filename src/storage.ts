@@ -18,15 +18,9 @@ export const save = (
   value: any,
   options: ClientStorageOptions
 ) => {
-  let cookieAttributes: Cookies.CookieAttributes = {};
-  if ('https:' === window.location.protocol) {
-    cookieAttributes = {
-      secure: true,
-      sameSite: 'none'
-    };
-  }
-  cookieAttributes.expires = options.daysUntilExpire;
-  Cookies.set(key, JSON.stringify(value), cookieAttributes);
+  Cookies.set(key, JSON.stringify(value), {
+    expires: options.daysUntilExpire
+  });
 };
 export const remove = (key: string) => {
   Cookies.remove(key);
