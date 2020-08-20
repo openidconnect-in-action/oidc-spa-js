@@ -596,7 +596,6 @@ export default class Auth0Client {
         );
 
         if (cache && cache.access_token) {
-          await lock.releaseLock(GET_TOKEN_SILENTLY_LOCK_KEY);
           return cache.access_token;
         }
       }
