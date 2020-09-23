@@ -51,7 +51,7 @@ let bundles = [
     input: 'src/index.cjs.ts',
     output: {
       name: EXPORT_NAME,
-      file: 'dist/auth0-spa-js.development.js',
+      file: 'dist/oidc-spa-js.development.js',
       footer,
       format: 'umd',
       sourcemap: true
@@ -79,7 +79,7 @@ if (isProduction) {
       output: [
         {
           name: EXPORT_NAME,
-          file: 'dist/auth0-spa-js.production.js',
+          file: 'dist/oidc-spa-js.production.js',
           footer,
           format: 'umd'
         }

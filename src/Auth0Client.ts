@@ -197,7 +197,7 @@ export default class Auth0Client {
       btoa(
         JSON.stringify(
           this.options.auth0Client || {
-            name: 'auth0-spa-js',
+            name: 'oidc-spa-js',
             version: version
           }
         )
@@ -243,9 +243,15 @@ export default class Auth0Client {
     };
   }
   private _authorizeUrl(authorizeOptions: AuthorizeOptions) {
-    console.log(`authorize_ep: ${authorizeOptions.authorize_ep}`)
-    console.log(`authorize_ep2: ${this.authzEp}`)
-    return this._url(authorizeOptions.authorize_ep===undefined?`/authorize?${createQueryParams(authorizeOptions)}`:`/${authorizeOptions.authorize_ep}?${createQueryParams(authorizeOptions)}`);
+    console.log(`authorize_ep: ${authorizeOptions.authorize_ep}`);
+    console.log(`authorize_ep2: ${this.authzEp}`);
+    return this._url(
+      authorizeOptions.authorize_ep === undefined
+        ? `/authorize?${createQueryParams(authorizeOptions)}`
+        : `/${authorizeOptions.authorize_ep}?${createQueryParams(
+            authorizeOptions
+          )}`
+    );
   }
   private _verifyIdToken(id_token: string, nonce?: string) {
     return verifyIdToken({
@@ -351,7 +357,7 @@ export default class Auth0Client {
       response_mode: 'web_message'
     });
 
-    console.log("LOGIN WEB MESSAGE");
+    console.log('LOGIN WEB MESSAGE');
 
     const codeResult = await runPopup(url, {
       ...config,
@@ -454,7 +460,7 @@ export default class Auth0Client {
    * @param options
    */
   public async loginWithRedirect(options: RedirectLoginOptions = {}) {
-    console.log("loginWithRedirect");
+    console.log('loginWithRedirect');
     const url = await this.buildAuthorizeUrl(options);
     window.location.assign(url);
   }
@@ -561,7 +567,7 @@ export default class Auth0Client {
     ) {
       return;
     }
-//TODO: PRABATH
+    //TODO: PRABATH
     // try {
     //   await this.getTokenSilently(options);
     // } catch (error) {
@@ -778,7 +784,7 @@ export default class Auth0Client {
 
     //PRABATH: TODO
 
-    console.log("_getTokenFromIFrame");
+    console.log('_getTokenFromIFrame');
 
     const timeout =
       options.timeoutInSeconds || this.options.authorizeTimeoutInSeconds;
