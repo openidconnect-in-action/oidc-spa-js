@@ -337,23 +337,31 @@ const getJSON = async (
   return success;
 };
 
+const formify = (json) => {
+  let formified ="";
+  for (var key in json) {
+    if (json.hasOwnProperty(key)) {
+      formified += `${key}=${json[key]}&`;
+    }
+  }
+  console.log(`Formified: ${formified}`);
+  return formified;
+}
+
 export const oauthToken = async (
-  { baseUrl, timeout, audience, scope, ...options }: TokenEndpointOptions,
+  { baseUrl, timeout, audience, token_ep, scope, ...options }: TokenEndpointOptions,
   worker: Worker
 ) =>
   await getJSON(
-    `${baseUrl}/oauth/token`,
+    token_ep===undefined?`${baseUrl}/token`:`${baseUrl}/${token_ep}`,
     timeout,
     audience || 'default',
     scope,
     {
       method: 'POST',
-      body: JSON.stringify({
-        redirect_uri: window.location.origin,
-        ...options
-      }),
+      body: `${formify(options)}`,
       headers: {
-        'Content-type': 'application/json'
+        'Content-type': 'application/x-www-form-urlencoded'
       }
     },
     worker

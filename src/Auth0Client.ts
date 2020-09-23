@@ -111,6 +111,8 @@ const getCustomInitialOptions = (
     cacheLocation,
     client_id,
     domain,
+    authorize_ep,
+    token_ep,
     issuer,
     leeway,
     max_age,
@@ -130,6 +132,8 @@ export default class Auth0Client {
   private transactionManager: TransactionManager;
   private customOptions: BaseLoginOptions;
   private domainUrl: string;
+  private tokenEp?: string;
+  private authzEp?: string;
   private tokenIssuer: string;
   private defaultScope: string;
   private scope: string;
@@ -154,6 +158,10 @@ export default class Auth0Client {
     this.scope = this.options.scope;
     this.transactionManager = new TransactionManager(SessionStorage);
     this.domainUrl = `https://${this.options.domain}`;
+    this.tokenEp = this.options.token_ep;
+    this.authzEp = this.options.authz_ep;
+    console.log(`AuthZ EP ${this.authzEp}`);
+    console.log(`Token EP ${this.tokenEp}`);
     this.tokenIssuer = getTokenIssuer(this.options.issuer, this.domainUrl);
 
     this.defaultScope = getUniqueScopes(
@@ -207,6 +215,7 @@ export default class Auth0Client {
   ): AuthorizeOptions {
     const {
       domain,
+      authorize_ep,
       leeway,
       useRefreshTokens,
       auth0Client,
@@ -226,6 +235,7 @@ export default class Auth0Client {
       response_type: 'code',
       response_mode: 'query',
       state,
+      authorize_ep: this.authzEp,
       nonce,
       redirect_uri: redirect_uri || this.options.redirect_uri,
       code_challenge,
@@ -233,7 +243,9 @@ export default class Auth0Client {
     };
   }
   private _authorizeUrl(authorizeOptions: AuthorizeOptions) {
-    return this._url(`/authorize?${createQueryParams(authorizeOptions)}`);
+    console.log(`authorize_ep: ${authorizeOptions.authorize_ep}`)
+    console.log(`authorize_ep2: ${this.authzEp}`)
+    return this._url(authorizeOptions.authorize_ep===undefined?`/authorize?${createQueryParams(authorizeOptions)}`:`/${authorizeOptions.authorize_ep}?${createQueryParams(authorizeOptions)}`);
   }
   private _verifyIdToken(id_token: string, nonce?: string) {
     return verifyIdToken({
@@ -339,6 +351,8 @@ export default class Auth0Client {
       response_mode: 'web_message'
     });
 
+    console.log("LOGIN WEB MESSAGE");
+
     const codeResult = await runPopup(url, {
       ...config,
       timeoutInSeconds:
@@ -356,6 +370,7 @@ export default class Auth0Client {
         audience: params.audience,
         scope: params.scope,
         baseUrl: this.domainUrl,
+        token_ep: this.tokenEp,
         client_id: this.options.client_id,
         code_verifier,
         code: codeResult.code,
@@ -439,6 +454,7 @@ export default class Auth0Client {
    * @param options
    */
   public async loginWithRedirect(options: RedirectLoginOptions = {}) {
+    console.log("loginWithRedirect");
     const url = await this.buildAuthorizeUrl(options);
     window.location.assign(url);
   }
@@ -484,6 +500,7 @@ export default class Auth0Client {
       audience: transaction.audience,
       scope: transaction.scope,
       baseUrl: this.domainUrl,
+      token_ep: this.tokenEp,
       client_id: this.options.client_id,
       code_verifier: transaction.code_verifier,
       grant_type: 'authorization_code',
@@ -544,14 +561,14 @@ export default class Auth0Client {
     ) {
       return;
     }
-
-    try {
-      await this.getTokenSilently(options);
-    } catch (error) {
-      if (!RECOVERABLE_ERRORS.includes(error.error)) {
-        throw error;
-      }
-    }
+//TODO: PRABATH
+    // try {
+    //   await this.getTokenSilently(options);
+    // } catch (error) {
+    //   if (!RECOVERABLE_ERRORS.includes(error.error)) {
+    //     throw error;
+    //   }
+    // }
   }
 
   /**
@@ -756,8 +773,12 @@ export default class Auth0Client {
     const url = this._authorizeUrl({
       ...params,
       prompt: 'none',
-      response_mode: 'web_message'
+      response_mode: 'form_post'
     });
+
+    //PRABATH: TODO
+
+    console.log("_getTokenFromIFrame");
 
     const timeout =
       options.timeoutInSeconds || this.options.authorizeTimeoutInSeconds;
@@ -783,6 +804,7 @@ export default class Auth0Client {
         scope,
         audience,
         baseUrl: this.domainUrl,
+        token_ep: this.tokenEp,
         client_id: this.options.client_id,
         code_verifier,
         code: codeResult.code,
@@ -847,6 +869,7 @@ export default class Auth0Client {
           audience,
           scope,
           baseUrl: this.domainUrl,
+          token_ep: this.tokenEp,
           client_id: this.options.client_id,
           grant_type: 'refresh_token',
           refresh_token: cache && cache.refresh_token,

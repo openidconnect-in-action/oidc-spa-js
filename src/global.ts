@@ -81,6 +81,10 @@ export interface Auth0ClientOptions extends BaseLoginOptions {
    * (when using [custom domains](https://auth0.com/docs/custom-domains))
    */
   domain: string;
+
+  authorize_ep?: string;
+
+  token_ep?: string;
   /**
    * The issuer to be used for validation of JWTs, optionally defaults to the domain above
    */
@@ -158,6 +162,7 @@ export interface AuthorizeOptions extends BaseLoginOptions {
   response_type: string;
   response_mode: string;
   redirect_uri: string;
+  authorize_ep?: string;
   nonce: string;
   state: string;
   scope: string;
@@ -334,6 +339,7 @@ export interface AuthenticationResult {
  */
 export interface TokenEndpointOptions {
   baseUrl: string;
+  token_ep?: string;
   client_id: string;
   grant_type: string;
   timeout?: number;
